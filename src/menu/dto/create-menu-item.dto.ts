@@ -1,37 +1,44 @@
-import { IsString, IsNumber, IsEnum, IsOptional, IsBoolean, IsInt } from "class-validator"
-import { MenuItemType } from "@prisma/client"
+import {
+  IsString,
+  IsNumber,
+  IsEnum,
+  IsOptional,
+  IsBoolean,
+  IsInt,
+} from "class-validator";
+import { MenuItemType } from "@prisma/client";
 
 export class CreateMenuItemDto {
   @IsString()
-  name: string
+  name: string;
 
   @IsOptional()
   @IsString()
-  description?: string
+  description?: string;
 
   @IsNumber()
-  price: number
+  price: number;
 
   @IsOptional()
   @IsString()
-  image?: string
+  image?: string;
 
   @IsOptional()
   @IsEnum(MenuItemType)
-  type?: MenuItemType
+  type?: MenuItemType;
 
   @IsString()
-  categoryId: string
+  categoryId: string;
 
   @IsOptional()
   @IsBoolean()
-  requiresKitchen?: boolean
+  requiresKitchen?: boolean;
 
   @IsOptional()
   @IsBoolean()
-  inStock?: boolean
+  inStock?: boolean;
 
   @IsOptional()
   @IsInt()
-  quantity?: number
+  quantity?: number;
 }

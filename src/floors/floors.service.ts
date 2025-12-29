@@ -1,7 +1,7 @@
-import { Injectable, NotFoundException } from "@nestjs/common"
-import type { PrismaService } from "../prisma/prisma.service"
-import type { CreateFloorDto } from "./dto/create-floor.dto"
-import type { UpdateFloorDto } from "./dto/update-floor.dto"
+import { Injectable, NotFoundException } from "@nestjs/common";
+import type { PrismaService } from "../prisma/prisma.service";
+import type { CreateFloorDto } from "./dto/create-floor.dto";
+import type { UpdateFloorDto } from "./dto/update-floor.dto";
 
 @Injectable()
 export class FloorsService {
@@ -11,34 +11,34 @@ export class FloorsService {
     return this.prisma.floor.findMany({
       include: { rooms: true },
       orderBy: { level: "asc" },
-    })
+    });
   }
 
   async findOne(id: string) {
     const floor = await this.prisma.floor.findUnique({
       where: { id },
       include: { rooms: true },
-    })
+    });
 
     if (!floor) {
-      throw new NotFoundException("Floor not found")
+      throw new NotFoundException("Floor not found");
     }
 
-    return floor
+    return floor;
   }
 
   create(dto: CreateFloorDto) {
-    return this.prisma.floor.create({ data: dto })
+    return this.prisma.floor.create({ data: dto });
   }
 
   async update(id: string, dto: UpdateFloorDto) {
-    await this.findOne(id)
-    return this.prisma.floor.update({ where: { id }, data: dto })
+    await this.findOne(id);
+    return this.prisma.floor.update({ where: { id }, data: dto });
   }
 
   async remove(id: string) {
-    await this.findOne(id)
-    await this.prisma.floor.delete({ where: { id } })
-    return { message: "Floor deleted successfully" }
+    await this.findOne(id);
+    await this.prisma.floor.delete({ where: { id } });
+    return { message: "Floor deleted successfully" };
   }
 }

@@ -1,8 +1,8 @@
-import { Injectable, NotFoundException } from "@nestjs/common"
-import type { PrismaService } from "../prisma/prisma.service"
-import type { CreateRoomDto } from "./dto/create-room.dto"
-import type { UpdateRoomDto } from "./dto/update-room.dto"
-import type { UpdateElementsDto } from "./dto/update-elements.dto"
+import { Injectable, NotFoundException } from "@nestjs/common";
+import type { PrismaService } from "../prisma/prisma.service";
+import type { CreateRoomDto } from "./dto/create-room.dto";
+import type { UpdateRoomDto } from "./dto/update-room.dto";
+import type { UpdateElementsDto } from "./dto/update-elements.dto";
 
 @Injectable()
 export class RoomsService {
@@ -16,7 +16,7 @@ export class RoomsService {
         elements: true,
       },
       orderBy: { createdAt: "desc" },
-    })
+    });
   }
 
   async findOne(id: string) {
@@ -26,36 +26,36 @@ export class RoomsService {
         floor: true,
         elements: true,
       },
-    })
+    });
 
     if (!room) {
-      throw new NotFoundException("Room not found")
+      throw new NotFoundException("Room not found");
     }
 
-    return room
+    return room;
   }
 
   create(dto: CreateRoomDto) {
     return this.prisma.room.create({
       data: dto,
       include: { floor: true },
-    })
+    });
   }
 
   async update(id: string, dto: UpdateRoomDto) {
-    await this.findOne(id)
+    await this.findOne(id);
     return this.prisma.room.update({
       where: { id },
       data: dto,
       include: { floor: true },
-    })
+    });
   }
 
   async updateElements(id: string, dto: UpdateElementsDto) {
-    await this.findOne(id)
+    await this.findOne(id);
 
     // Delete existing elements and create new ones
-    await this.prisma.roomElement.deleteMany({ where: { roomId: id } })
+    await this.prisma.roomElement.deleteMany({ where: { roomId: id } });
 
     if (dto.elements && dto.elements.length > 0) {
       await this.prisma.roomElement.createMany({
@@ -63,15 +63,15 @@ export class RoomsService {
           ...el,
           roomId: id,
         })),
-      })
+      });
     }
 
-    return this.findOne(id)
+    return this.findOne(id);
   }
 
   async remove(id: string) {
-    await this.findOne(id)
-    await this.prisma.room.delete({ where: { id } })
-    return { message: "Room deleted successfully" }
+    await this.findOne(id);
+    await this.prisma.room.delete({ where: { id } });
+    return { message: "Room deleted successfully" };
   }
 }

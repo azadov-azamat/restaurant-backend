@@ -1,13 +1,13 @@
-import { IsString, IsOptional } from "class-validator"
+import { IsString, IsOptional } from "class-validator";
 
 export class CreateOrderDto {
   @IsString()
-  roomId: string
+  roomId: string;
 
   @IsString()
-  tableId: string
+  tableId: string;
 
   @IsOptional()
   @IsString()
-  note?: string
+  note?: string;
 }

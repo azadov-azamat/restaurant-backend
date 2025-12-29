@@ -1,15 +1,15 @@
-import { IsString, IsNumber } from "class-validator"
+import { IsString, IsNumber } from "class-validator";
 
 export class CreateRoomDto {
   @IsString()
-  name: string
+  name: string;
 
   @IsString()
-  floorId: string
+  floorId: string;
 
   @IsNumber()
-  width: number
+  width: number;
 
   @IsNumber()
-  height: number
+  height: number;
 }

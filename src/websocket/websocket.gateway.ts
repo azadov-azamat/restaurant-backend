@@ -4,10 +4,10 @@ import {
   type OnGatewayConnection,
   type OnGatewayDisconnect,
   SubscribeMessage,
-} from "@nestjs/websockets"
-import type { Server, Socket } from "socket.io"
-import type { JwtService } from "@nestjs/jwt"
-import type { OrderItemStatus } from "@prisma/client"
+} from "@nestjs/websockets";
+import type { Server, Socket } from "socket.io";
+import type { JwtService } from "@nestjs/jwt";
+import type { OrderItemStatus } from "@prisma/client";
 
 @WebSocketGateway({
   cors: {
@@ -15,70 +15,72 @@ import type { OrderItemStatus } from "@prisma/client"
     credentials: true,
   },
 })
-export class WebsocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
+export class WebsocketGateway
+  implements OnGatewayConnection, OnGatewayDisconnect
+{
   @WebSocketServer()
-  server: Server
+  server: Server;
 
-  private connectedUsers = new Map<string, { socket: Socket; role: string }>()
+  private connectedUsers = new Map<string, { socket: Socket; role: string }>();
 
   constructor(private jwtService: JwtService) {}
 
   async handleConnection(client: Socket) {
     try {
-      const token = client.handshake.auth.token
+      const token = client.handshake.auth.token;
       if (!token) {
-        client.disconnect()
-        return
+        client.disconnect();
+        return;
       }
 
-      const payload = this.jwtService.verify(token)
+      const payload = this.jwtService.verify(token);
       this.connectedUsers.set(client.id, {
         socket: client,
         role: payload.role,
-      })
+      });
 
       // Join role-based room
-      client.join(`role:${payload.role}`)
-      console.log(`Client connected: ${client.id} (${payload.role})`)
+      client.join(`role:${payload.role}`);
+      console.log(`Client connected: ${client.id} (${payload.role})`);
     } catch (error) {
-      client.disconnect()
+      client.disconnect();
     }
   }
 
   handleDisconnect(client: Socket) {
-    this.connectedUsers.delete(client.id)
-    console.log(`Client disconnected: ${client.id}`)
+    this.connectedUsers.delete(client.id);
+    console.log(`Client disconnected: ${client.id}`);
   }
 
   @SubscribeMessage("join:room")
   handleJoinRoom(client: Socket, roomId: string) {
-    client.join(`room:${roomId}`)
+    client.join(`room:${roomId}`);
   }
 
   @SubscribeMessage("leave:room")
   handleLeaveRoom(client: Socket, roomId: string) {
-    client.leave(`room:${roomId}`)
+    client.leave(`room:${roomId}`);
   }
 
   // Emit events
   emitOrderCreated(order: any) {
-    this.server.emit("order:new", order)
+    this.server.emit("order:new", order);
   }
 
   emitOrderUpdated(order: any) {
-    this.server.emit("order:updated", order)
-    this.server.to(`room:${order.roomId}`).emit("order:room:updated", order)
+    this.server.emit("order:updated", order);
+    this.server.to(`room:${order.roomId}`).emit("order:room:updated", order);
   }
 
   emitItemStatusChanged(order: any, itemId: string, status: OrderItemStatus) {
-    this.server.emit("order:item:status", { order, itemId, status })
+    this.server.emit("order:item:status", { order, itemId, status });
   }
 
   emitKitchenNew(order: any, item: any) {
-    this.server.to("role:CHEF").emit("kitchen:new", { order, item })
+    this.server.to("role:CHEF").emit("kitchen:new", { order, item });
   }
 
   emitKitchenReady(order: any, item: any) {
-    this.server.to("role:WAITER").emit("kitchen:ready", { order, item })
+    this.server.to("role:WAITER").emit("kitchen:ready", { order, item });
   }
 }

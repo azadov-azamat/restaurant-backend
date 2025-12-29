@@ -1,4 +1,5 @@
-declare const UpdateStaffDto_base: any;
+import { CreateStaffDto } from "./create-staff.dto";
+declare const UpdateStaffDto_base: import("@nestjs/mapped-types").MappedType<Partial<CreateStaffDto>>;
 export declare class UpdateStaffDto extends UpdateStaffDto_base {
 }
 export {};

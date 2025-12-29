@@ -1,9 +1,9 @@
-import { IsString, IsInt } from "class-validator"
+import { IsString, IsInt } from "class-validator";
 
 export class CreateFloorDto {
   @IsString()
-  name: string
+  name: string;
 
   @IsInt()
-  level: number
+  level: number;
 }

@@ -1,47 +1,55 @@
-import { IsArray, IsEnum, IsNumber, IsOptional, IsString, IsBoolean, ValidateNested } from "class-validator"
-import { Type } from "class-transformer"
-import { ElementType } from "@prisma/client"
+import {
+  IsArray,
+  IsEnum,
+  IsNumber,
+  IsOptional,
+  IsString,
+  IsBoolean,
+  ValidateNested,
+} from "class-validator";
+import { Type } from "class-transformer";
+import { ElementType } from "@prisma/client";
 
 class ElementDto {
   @IsEnum(ElementType)
-  type: ElementType
+  type: ElementType;
 
   @IsNumber()
-  x: number
+  x: number;
 
   @IsNumber()
-  y: number
+  y: number;
 
   @IsNumber()
-  width: number
+  width: number;
 
   @IsNumber()
-  height: number
+  height: number;
 
   @IsOptional()
   @IsNumber()
-  rotation?: number
+  rotation?: number;
 
   @IsOptional()
   @IsString()
-  tableCode?: string
+  tableCode?: string;
 
   @IsOptional()
   @IsNumber()
-  seats?: number
+  seats?: number;
 
   @IsOptional()
   @IsBoolean()
-  isRound?: boolean
+  isRound?: boolean;
 
   @IsOptional()
   @IsString()
-  swingDirection?: string
+  swingDirection?: string;
 }
 
 export class UpdateElementsDto {
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => ElementDto)
-  elements: ElementDto[]
+  elements: ElementDto[];
 }

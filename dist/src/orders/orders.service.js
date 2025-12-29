@@ -84,7 +84,8 @@ let OrdersService = class OrdersService {
     }
     async addItems(orderId, dto) {
         const order = await this.findOne(orderId);
-        if (order.status === client_1.OrderStatus.PAID || order.status === client_1.OrderStatus.CANCELLED) {
+        if (order.status === client_1.OrderStatus.PAID ||
+            order.status === client_1.OrderStatus.CANCELLED) {
             throw new common_1.BadRequestException("Cannot modify closed order");
         }
         const menuItems = await this.prisma.menuItem.findMany({
