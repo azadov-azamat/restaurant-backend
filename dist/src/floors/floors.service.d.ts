@@ -1,4 +1,4 @@
-import type { PrismaService } from "../prisma/prisma.service";
+import { PrismaService } from "../prisma/prisma.service";
 import type { CreateFloorDto } from "./dto/create-floor.dto";
 import type { UpdateFloorDto } from "./dto/update-floor.dto";
 export declare class FloorsService {

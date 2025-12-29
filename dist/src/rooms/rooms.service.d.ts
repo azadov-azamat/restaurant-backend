@@ -1,4 +1,4 @@
-import type { PrismaService } from "../prisma/prisma.service";
+import { PrismaService } from "../prisma/prisma.service";
 import type { CreateRoomDto } from "./dto/create-room.dto";
 import type { UpdateRoomDto } from "./dto/update-room.dto";
 import type { UpdateElementsDto } from "./dto/update-elements.dto";
