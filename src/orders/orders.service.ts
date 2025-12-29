@@ -4,10 +4,10 @@ import {
   BadRequestException,
 } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
-import type { CreateOrderDto } from "./dto/create-order.dto";
-import type { AddItemsDto } from "./dto/add-items.dto";
+import { CreateOrderDto } from "./dto/create-order.dto";
+import { AddItemsDto } from "./dto/add-items.dto";
 import { OrderStatus, OrderItemStatus, UserRole } from "@prisma/client";
-import type { WebsocketGateway } from "../websocket/websocket.gateway";
+import { WebsocketGateway } from "../websocket/websocket.gateway";
 
 @Injectable()
 export class OrdersService {

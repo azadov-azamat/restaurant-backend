@@ -10,9 +10,9 @@ import {
 } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { UserRole } from "@prisma/client";
-import type { MenuService } from "./menu.service";
-import type { CreateMenuItemDto } from "./dto/create-menu-item.dto";
-import type { UpdateMenuItemDto } from "./dto/update-menu-item.dto";
+import { MenuService } from "./menu.service";
+import { CreateMenuItemDto } from "./dto/create-menu-item.dto";
+import { UpdateMenuItemDto } from "./dto/update-menu-item.dto";
 import { Roles } from "../common/decorators/roles.decorator";
 import { RolesGuard } from "../common/guards/roles.guard";
 

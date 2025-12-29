@@ -16,6 +16,10 @@ exports.RoomsController = void 0;
 const common_1 = require("@nestjs/common");
 const passport_1 = require("@nestjs/passport");
 const client_1 = require("@prisma/client");
+const rooms_service_1 = require("./rooms.service");
+const create_room_dto_1 = require("./dto/create-room.dto");
+const update_room_dto_1 = require("./dto/update-room.dto");
+const update_elements_dto_1 = require("./dto/update-elements.dto");
 const roles_decorator_1 = require("../common/decorators/roles.decorator");
 const roles_guard_1 = require("../common/guards/roles.guard");
 let RoomsController = class RoomsController {
@@ -60,7 +64,7 @@ __decorate([
     (0, roles_decorator_1.Roles)(client_1.UserRole.ADMIN, client_1.UserRole.MANAGER),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Function]),
+    __metadata("design:paramtypes", [create_room_dto_1.CreateRoomDto]),
     __metadata("design:returntype", void 0)
 ], RoomsController.prototype, "create", null);
 __decorate([
@@ -69,7 +73,7 @@ __decorate([
     __param(0, (0, common_1.Param)("id")),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Function]),
+    __metadata("design:paramtypes", [String, update_room_dto_1.UpdateRoomDto]),
     __metadata("design:returntype", void 0)
 ], RoomsController.prototype, "update", null);
 __decorate([
@@ -78,7 +82,7 @@ __decorate([
     __param(0, (0, common_1.Param)("id")),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Function]),
+    __metadata("design:paramtypes", [String, update_elements_dto_1.UpdateElementsDto]),
     __metadata("design:returntype", void 0)
 ], RoomsController.prototype, "updateElements", null);
 __decorate([
@@ -92,6 +96,6 @@ __decorate([
 exports.RoomsController = RoomsController = __decorate([
     (0, common_1.Controller)("rooms"),
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)("jwt"), roles_guard_1.RolesGuard),
-    __metadata("design:paramtypes", [Function])
+    __metadata("design:paramtypes", [rooms_service_1.RoomsService])
 ], RoomsController);
 //# sourceMappingURL=rooms.controller.js.map

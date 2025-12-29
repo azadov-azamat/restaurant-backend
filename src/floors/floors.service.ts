@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
-import type { CreateFloorDto } from "./dto/create-floor.dto";
-import type { UpdateFloorDto } from "./dto/update-floor.dto";
+import { CreateFloorDto } from "./dto/create-floor.dto";
+import { UpdateFloorDto } from "./dto/update-floor.dto";
 
 @Injectable()
 export class FloorsService {

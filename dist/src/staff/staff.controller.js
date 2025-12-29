@@ -16,6 +16,9 @@ exports.StaffController = void 0;
 const common_1 = require("@nestjs/common");
 const passport_1 = require("@nestjs/passport");
 const client_1 = require("@prisma/client");
+const staff_service_1 = require("./staff.service");
+const create_staff_dto_1 = require("./dto/create-staff.dto");
+const update_staff_dto_1 = require("./dto/update-staff.dto");
 const roles_decorator_1 = require("../common/decorators/roles.decorator");
 const roles_guard_1 = require("../common/guards/roles.guard");
 const current_user_decorator_1 = require("../common/decorators/current-user.decorator");
@@ -62,7 +65,7 @@ __decorate([
     __param(0, (0, common_1.Body)()),
     __param(1, (0, current_user_decorator_1.CurrentUser)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Function, Object]),
+    __metadata("design:paramtypes", [create_staff_dto_1.CreateStaffDto, Object]),
     __metadata("design:returntype", void 0)
 ], StaffController.prototype, "create", null);
 __decorate([
@@ -71,7 +74,7 @@ __decorate([
     __param(0, (0, common_1.Param)("id")),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Function]),
+    __metadata("design:paramtypes", [String, update_staff_dto_1.UpdateStaffDto]),
     __metadata("design:returntype", void 0)
 ], StaffController.prototype, "update", null);
 __decorate([
@@ -85,6 +88,6 @@ __decorate([
 exports.StaffController = StaffController = __decorate([
     (0, common_1.Controller)("staff"),
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)("jwt"), roles_guard_1.RolesGuard),
-    __metadata("design:paramtypes", [Function])
+    __metadata("design:paramtypes", [staff_service_1.StaffService])
 ], StaffController);
 //# sourceMappingURL=staff.controller.js.map

@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
-import type { CreateMenuItemDto } from "./dto/create-menu-item.dto";
-import type { UpdateMenuItemDto } from "./dto/update-menu-item.dto";
+import { CreateMenuItemDto } from "./dto/create-menu-item.dto";
+import { UpdateMenuItemDto } from "./dto/update-menu-item.dto";
 
 @Injectable()
 export class MenuService {

@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
-import type { CreateRoomDto } from "./dto/create-room.dto";
-import type { UpdateRoomDto } from "./dto/update-room.dto";
-import type { UpdateElementsDto } from "./dto/update-elements.dto";
+import { CreateRoomDto } from "./dto/create-room.dto";
+import { UpdateRoomDto } from "./dto/update-room.dto";
+import { UpdateElementsDto } from "./dto/update-elements.dto";
 
 @Injectable()
 export class RoomsService {

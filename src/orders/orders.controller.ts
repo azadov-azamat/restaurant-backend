@@ -15,9 +15,9 @@ import {
   type OrderItemStatus,
   UserRole,
 } from "@prisma/client";
-import type { OrdersService } from "./orders.service";
-import type { CreateOrderDto } from "./dto/create-order.dto";
-import type { AddItemsDto } from "./dto/add-items.dto";
+import { OrdersService } from "./orders.service";
+import { CreateOrderDto } from "./dto/create-order.dto";
+import { AddItemsDto } from "./dto/add-items.dto";
 import { Roles } from "../common/decorators/roles.decorator";
 import { RolesGuard } from "../common/guards/roles.guard";
 

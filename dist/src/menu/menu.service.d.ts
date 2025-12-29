@@ -1,6 +1,6 @@
 import { PrismaService } from "../prisma/prisma.service";
-import type { CreateMenuItemDto } from "./dto/create-menu-item.dto";
-import type { UpdateMenuItemDto } from "./dto/update-menu-item.dto";
+import { CreateMenuItemDto } from "./dto/create-menu-item.dto";
+import { UpdateMenuItemDto } from "./dto/update-menu-item.dto";
 export declare class MenuService {
     private prisma;
     constructor(prisma: PrismaService);
@@ -15,16 +15,16 @@ export declare class MenuService {
     } & {
         id: string;
         name: string;
-        createdAt: Date;
-        updatedAt: Date;
-        type: import(".prisma/client").$Enums.MenuItemType;
         description: string | null;
         price: number;
         image: string | null;
+        type: import(".prisma/client").$Enums.MenuItemType;
         categoryId: string;
         requiresKitchen: boolean;
         inStock: boolean;
         quantity: number | null;
+        createdAt: Date;
+        updatedAt: Date;
     })[]>;
     findOne(id: string): Promise<{
         category: {
@@ -37,16 +37,16 @@ export declare class MenuService {
     } & {
         id: string;
         name: string;
-        createdAt: Date;
-        updatedAt: Date;
-        type: import(".prisma/client").$Enums.MenuItemType;
         description: string | null;
         price: number;
         image: string | null;
+        type: import(".prisma/client").$Enums.MenuItemType;
         categoryId: string;
         requiresKitchen: boolean;
         inStock: boolean;
         quantity: number | null;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
     create(dto: CreateMenuItemDto): import(".prisma/client").Prisma.Prisma__MenuItemClient<{
         category: {
@@ -59,16 +59,16 @@ export declare class MenuService {
     } & {
         id: string;
         name: string;
-        createdAt: Date;
-        updatedAt: Date;
-        type: import(".prisma/client").$Enums.MenuItemType;
         description: string | null;
         price: number;
         image: string | null;
+        type: import(".prisma/client").$Enums.MenuItemType;
         categoryId: string;
         requiresKitchen: boolean;
         inStock: boolean;
         quantity: number | null;
+        createdAt: Date;
+        updatedAt: Date;
     }, never, import("@prisma/client/runtime/library").DefaultArgs, import(".prisma/client").Prisma.PrismaClientOptions>;
     update(id: string, dto: UpdateMenuItemDto): Promise<{
         category: {
@@ -81,16 +81,16 @@ export declare class MenuService {
     } & {
         id: string;
         name: string;
-        createdAt: Date;
-        updatedAt: Date;
-        type: import(".prisma/client").$Enums.MenuItemType;
         description: string | null;
         price: number;
         image: string | null;
+        type: import(".prisma/client").$Enums.MenuItemType;
         categoryId: string;
         requiresKitchen: boolean;
         inStock: boolean;
         quantity: number | null;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
     remove(id: string): Promise<{
         message: string;

@@ -1,7 +1,7 @@
 import { PrismaService } from "../prisma/prisma.service";
-import type { CreateStaffDto } from "./dto/create-staff.dto";
-import type { UpdateStaffDto } from "./dto/update-staff.dto";
-import type { UserRole } from "@prisma/client";
+import { CreateStaffDto } from "./dto/create-staff.dto";
+import { UpdateStaffDto } from "./dto/update-staff.dto";
+import { UserRole } from "@prisma/client";
 export declare class StaffService {
     private prisma;
     constructor(prisma: PrismaService);

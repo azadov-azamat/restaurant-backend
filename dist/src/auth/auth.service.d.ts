@@ -1,6 +1,6 @@
-import type { JwtService } from "@nestjs/jwt";
+import { JwtService } from "@nestjs/jwt";
 import { PrismaService } from "../prisma/prisma.service";
-import type { LoginDto } from "./dto/login.dto";
+import { LoginDto } from "./dto/login.dto";
 export declare class AuthService {
     private prisma;
     private jwtService;

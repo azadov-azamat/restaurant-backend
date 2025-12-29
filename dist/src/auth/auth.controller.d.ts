@@ -1,5 +1,5 @@
-import type { AuthService } from "./auth.service";
-import type { LoginDto } from "./dto/login.dto";
+import { AuthService } from "./auth.service";
+import { LoginDto } from "./dto/login.dto";
 export declare class AuthController {
     private authService;
     constructor(authService: AuthService);

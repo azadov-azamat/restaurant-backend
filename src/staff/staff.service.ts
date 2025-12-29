@@ -4,10 +4,10 @@ import {
   NotFoundException,
 } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
-import type { CreateStaffDto } from "./dto/create-staff.dto";
-import type { UpdateStaffDto } from "./dto/update-staff.dto";
+import { CreateStaffDto } from "./dto/create-staff.dto";
+import { UpdateStaffDto } from "./dto/update-staff.dto";
 import * as bcrypt from "bcrypt";
-import type { UserRole } from "@prisma/client";
+import { UserRole } from "@prisma/client";
 
 @Injectable()
 export class StaffService {

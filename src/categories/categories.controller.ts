@@ -10,9 +10,9 @@ import {
 } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { UserRole } from "@prisma/client";
-import type { CategoriesService } from "./categories.service";
-import type { CreateCategoryDto } from "./dto/create-category.dto";
-import type { UpdateCategoryDto } from "./dto/update-category.dto";
+import { CategoriesService } from "./categories.service";
+import { CreateCategoryDto } from "./dto/create-category.dto";
+import { UpdateCategoryDto } from "./dto/update-category.dto";
 import { Roles } from "../common/decorators/roles.decorator";
 import { RolesGuard } from "../common/guards/roles.guard";
 

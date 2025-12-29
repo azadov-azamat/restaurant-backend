@@ -10,9 +10,9 @@ import {
 } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { UserRole } from "@prisma/client";
-import type { StaffService } from "./staff.service";
-import type { CreateStaffDto } from "./dto/create-staff.dto";
-import type { UpdateStaffDto } from "./dto/update-staff.dto";
+import { StaffService } from "./staff.service";
+import { CreateStaffDto } from "./dto/create-staff.dto";
+import { UpdateStaffDto } from "./dto/update-staff.dto";
 import { Roles } from "../common/decorators/roles.decorator";
 import { RolesGuard } from "../common/guards/roles.guard";
 import { CurrentUser } from "../common/decorators/current-user.decorator";

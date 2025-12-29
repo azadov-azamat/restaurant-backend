@@ -16,6 +16,9 @@ exports.MenuController = void 0;
 const common_1 = require("@nestjs/common");
 const passport_1 = require("@nestjs/passport");
 const client_1 = require("@prisma/client");
+const menu_service_1 = require("./menu.service");
+const create_menu_item_dto_1 = require("./dto/create-menu-item.dto");
+const update_menu_item_dto_1 = require("./dto/update-menu-item.dto");
 const roles_decorator_1 = require("../common/decorators/roles.decorator");
 const roles_guard_1 = require("../common/guards/roles.guard");
 let MenuController = class MenuController {
@@ -57,7 +60,7 @@ __decorate([
     (0, roles_decorator_1.Roles)(client_1.UserRole.ADMIN, client_1.UserRole.MANAGER),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Function]),
+    __metadata("design:paramtypes", [create_menu_item_dto_1.CreateMenuItemDto]),
     __metadata("design:returntype", void 0)
 ], MenuController.prototype, "create", null);
 __decorate([
@@ -66,7 +69,7 @@ __decorate([
     __param(0, (0, common_1.Param)("id")),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Function]),
+    __metadata("design:paramtypes", [String, update_menu_item_dto_1.UpdateMenuItemDto]),
     __metadata("design:returntype", void 0)
 ], MenuController.prototype, "update", null);
 __decorate([
@@ -80,6 +83,6 @@ __decorate([
 exports.MenuController = MenuController = __decorate([
     (0, common_1.Controller)("menu"),
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)("jwt"), roles_guard_1.RolesGuard),
-    __metadata("design:paramtypes", [Function])
+    __metadata("design:paramtypes", [menu_service_1.MenuService])
 ], MenuController);
 //# sourceMappingURL=menu.controller.js.map
