@@ -1,6 +1,6 @@
-import type { CategoriesService } from "./categories.service";
-import type { CreateCategoryDto } from "./dto/create-category.dto";
-import type { UpdateCategoryDto } from "./dto/update-category.dto";
+import { CategoriesService } from "./categories.service";
+import { CreateCategoryDto } from "./dto/create-category.dto";
+import { UpdateCategoryDto } from "./dto/update-category.dto";
 export declare class CategoriesController {
     private categoriesService;
     constructor(categoriesService: CategoriesService);
@@ -10,45 +10,45 @@ export declare class CategoriesController {
         };
     } & {
         id: string;
-        name: string;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         color: string;
     })[]>;
     findOne(id: string): Promise<{
         menuItems: {
             id: string;
-            name: string;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
             type: import(".prisma/client").$Enums.MenuItemType;
-            description: string | null;
+            quantity: number | null;
             price: number;
+            description: string | null;
             image: string | null;
             categoryId: string;
             requiresKitchen: boolean;
             inStock: boolean;
-            quantity: number | null;
         }[];
     } & {
         id: string;
-        name: string;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         color: string;
     }>;
     create(dto: CreateCategoryDto): import(".prisma/client").Prisma.Prisma__CategoryClient<{
         id: string;
-        name: string;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         color: string;
     }, never, import("@prisma/client/runtime/library").DefaultArgs, import(".prisma/client").Prisma.PrismaClientOptions>;
     update(id: string, dto: UpdateCategoryDto): Promise<{
         id: string;
-        name: string;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         color: string;
     }>;
     remove(id: string): Promise<{

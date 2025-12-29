@@ -13,6 +13,7 @@ exports.OrdersService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
 const client_1 = require("@prisma/client");
+const websocket_gateway_1 = require("../websocket/websocket.gateway");
 let OrdersService = class OrdersService {
     constructor(prisma, wsGateway) {
         this.prisma = prisma;
@@ -204,6 +205,7 @@ let OrdersService = class OrdersService {
 exports.OrdersService = OrdersService;
 exports.OrdersService = OrdersService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService, Function])
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService,
+        websocket_gateway_1.WebsocketGateway])
 ], OrdersService);
 //# sourceMappingURL=orders.service.js.map

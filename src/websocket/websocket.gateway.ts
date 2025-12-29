@@ -5,9 +5,9 @@ import {
   type OnGatewayDisconnect,
   SubscribeMessage,
 } from "@nestjs/websockets";
-import type { Server, Socket } from "socket.io";
-import type { JwtService } from "@nestjs/jwt";
-import type { OrderItemStatus } from "@prisma/client";
+import { Server, Socket } from "socket.io";
+import { JwtService } from "@nestjs/jwt";
+import { OrderItemStatus } from "@prisma/client";
 
 @WebSocketGateway({
   cors: {

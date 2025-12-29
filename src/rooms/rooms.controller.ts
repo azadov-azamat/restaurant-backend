@@ -10,10 +10,10 @@ import {
 } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { UserRole } from "@prisma/client";
-import type { RoomsService } from "./rooms.service";
-import type { CreateRoomDto } from "./dto/create-room.dto";
-import type { UpdateRoomDto } from "./dto/update-room.dto";
-import type { UpdateElementsDto } from "./dto/update-elements.dto";
+import { RoomsService } from "./rooms.service";
+import { CreateRoomDto } from "./dto/create-room.dto";
+import { UpdateRoomDto } from "./dto/update-room.dto";
+import { UpdateElementsDto } from "./dto/update-elements.dto";
 import { Roles } from "../common/decorators/roles.decorator";
 import { RolesGuard } from "../common/guards/roles.guard";
 

@@ -11,6 +11,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.WebsocketGateway = void 0;
 const websockets_1 = require("@nestjs/websockets");
+const socket_io_1 = require("socket.io");
+const jwt_1 = require("@nestjs/jwt");
 let WebsocketGateway = class WebsocketGateway {
     constructor(jwtService) {
         this.jwtService = jwtService;
@@ -65,18 +67,18 @@ let WebsocketGateway = class WebsocketGateway {
 exports.WebsocketGateway = WebsocketGateway;
 __decorate([
     (0, websockets_1.WebSocketServer)(),
-    __metadata("design:type", Function)
+    __metadata("design:type", socket_io_1.Server)
 ], WebsocketGateway.prototype, "server", void 0);
 __decorate([
     (0, websockets_1.SubscribeMessage)("join:room"),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Function, String]),
+    __metadata("design:paramtypes", [socket_io_1.Socket, String]),
     __metadata("design:returntype", void 0)
 ], WebsocketGateway.prototype, "handleJoinRoom", null);
 __decorate([
     (0, websockets_1.SubscribeMessage)("leave:room"),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Function, String]),
+    __metadata("design:paramtypes", [socket_io_1.Socket, String]),
     __metadata("design:returntype", void 0)
 ], WebsocketGateway.prototype, "handleLeaveRoom", null);
 exports.WebsocketGateway = WebsocketGateway = __decorate([
@@ -86,6 +88,6 @@ exports.WebsocketGateway = WebsocketGateway = __decorate([
             credentials: true,
         },
     }),
-    __metadata("design:paramtypes", [Function])
+    __metadata("design:paramtypes", [jwt_1.JwtService])
 ], WebsocketGateway);
 //# sourceMappingURL=websocket.gateway.js.map
