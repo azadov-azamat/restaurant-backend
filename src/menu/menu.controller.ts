@@ -1,11 +1,20 @@
-import { Controller, Get, Post, Patch, Delete, Body, Param, UseGuards } from "@nestjs/common"
-import { AuthGuard } from "@nestjs/passport"
-import { UserRole } from "@prisma/client"
-import type { MenuService } from "./menu.service"
-import type { CreateMenuItemDto } from "./dto/create-menu-item.dto"
-import type { UpdateMenuItemDto } from "./dto/update-menu-item.dto"
-import { Roles } from "../common/decorators/roles.decorator"
-import { RolesGuard } from "../common/guards/roles.guard"
+import {
+  Controller,
+  Get,
+  Post,
+  Patch,
+  Delete,
+  Body,
+  Param,
+  UseGuards,
+} from "@nestjs/common";
+import { AuthGuard } from "@nestjs/passport";
+import { UserRole } from "@prisma/client";
+import type { MenuService } from "./menu.service";
+import type { CreateMenuItemDto } from "./dto/create-menu-item.dto";
+import type { UpdateMenuItemDto } from "./dto/update-menu-item.dto";
+import { Roles } from "../common/decorators/roles.decorator";
+import { RolesGuard } from "../common/guards/roles.guard";
 
 @Controller("menu")
 @UseGuards(AuthGuard("jwt"), RolesGuard)
@@ -14,11 +23,14 @@ export class MenuController {
 
   @Get()
   findAll(categoryId?: string, inStock?: string) {
-    return this.menuService.findAll(categoryId, inStock !== undefined ? inStock === "true" : undefined)
+    return this.menuService.findAll(
+      categoryId,
+      inStock !== undefined ? inStock === "true" : undefined,
+    );
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
+  @Get(":id")
+  findOne(@Param("id") id: string) {
     return this.menuService.findOne(id);
   }
 
@@ -30,13 +42,13 @@ export class MenuController {
 
   @Patch(":id")
   @Roles(UserRole.ADMIN, UserRole.MANAGER)
-  update(@Param('id') id: string, @Body() dto: UpdateMenuItemDto) {
-    return this.menuService.update(id, dto)
+  update(@Param("id") id: string, @Body() dto: UpdateMenuItemDto) {
+    return this.menuService.update(id, dto);
   }
 
-  @Delete(':id')
+  @Delete(":id")
   @Roles(UserRole.ADMIN, UserRole.MANAGER)
-  remove(@Param('id') id: string) {
+  remove(@Param("id") id: string) {
     return this.menuService.remove(id);
   }
 }

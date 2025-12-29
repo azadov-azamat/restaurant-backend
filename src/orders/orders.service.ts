@@ -1,9 +1,13 @@
-import { Injectable, NotFoundException, BadRequestException } from "@nestjs/common"
-import type { PrismaService } from "../prisma/prisma.service"
-import type { CreateOrderDto } from "./dto/create-order.dto"
-import type { AddItemsDto } from "./dto/add-items.dto"
-import { OrderStatus, OrderItemStatus, UserRole } from "@prisma/client"
-import type { WebsocketGateway } from "../websocket/websocket.gateway"
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from "@nestjs/common";
+import type { PrismaService } from "../prisma/prisma.service";
+import type { CreateOrderDto } from "./dto/create-order.dto";
+import type { AddItemsDto } from "./dto/add-items.dto";
+import { OrderStatus, OrderItemStatus, UserRole } from "@prisma/client";
+import type { WebsocketGateway } from "../websocket/websocket.gateway";
 
 @Injectable()
 export class OrdersService {
@@ -13,16 +17,16 @@ export class OrdersService {
   ) {}
 
   async findAll(userId: string, userRole: UserRole, status?: OrderStatus) {
-    const where: any = {}
+    const where: any = {};
 
     // Filter by status if provided
     if (status) {
-      where.status = status
+      where.status = status;
     }
 
     // Waiter sees only their orders
     if (userRole === UserRole.WAITER) {
-      where.waiterId = userId
+      where.waiterId = userId;
     }
 
     // Chef sees only orders with items sent to kitchen
@@ -33,7 +37,7 @@ export class OrdersService {
             in: [OrderItemStatus.SENT, OrderItemStatus.PREPARING],
           },
         },
-      }
+      };
     }
 
     return this.prisma.order.findMany({
@@ -47,7 +51,7 @@ export class OrdersService {
         },
       },
       orderBy: { createdAt: "desc" },
-    })
+    });
   }
 
   async findOne(id: string) {
@@ -61,13 +65,13 @@ export class OrdersService {
           include: { menuItem: { include: { category: true } } },
         },
       },
-    })
+    });
 
     if (!order) {
-      throw new NotFoundException("Order not found")
+      throw new NotFoundException("Order not found");
     }
 
-    return order
+    return order;
   }
 
   async create(dto: CreateOrderDto, waiterId: string) {
@@ -84,30 +88,33 @@ export class OrdersService {
         waiter: { select: { id: true, name: true } },
         items: true,
       },
-    })
+    });
 
-    this.wsGateway.emitOrderCreated(order)
-    return order
+    this.wsGateway.emitOrderCreated(order);
+    return order;
   }
 
   async addItems(orderId: string, dto: AddItemsDto) {
-    const order = await this.findOne(orderId)
+    const order = await this.findOne(orderId);
 
-    if (order.status === OrderStatus.PAID || order.status === OrderStatus.CANCELLED) {
-      throw new BadRequestException("Cannot modify closed order")
+    if (
+      order.status === OrderStatus.PAID ||
+      order.status === OrderStatus.CANCELLED
+    ) {
+      throw new BadRequestException("Cannot modify closed order");
     }
 
     // Get menu items to calculate prices
     const menuItems = await this.prisma.menuItem.findMany({
       where: { id: { in: dto.items.map((i) => i.menuItemId) } },
-    })
+    });
 
-    const menuItemMap = new Map(menuItems.map((m) => [m.id, m]))
+    const menuItemMap = new Map(menuItems.map((m) => [m.id, m]));
 
     // Create order items
     for (const item of dto.items) {
-      const menuItem = menuItemMap.get(item.menuItemId)
-      if (!menuItem) continue
+      const menuItem = menuItemMap.get(item.menuItemId);
+      if (!menuItem) continue;
 
       await this.prisma.orderItem.create({
         data: {
@@ -118,49 +125,55 @@ export class OrdersService {
           note: item.note,
           status: OrderItemStatus.PENDING,
         },
-      })
+      });
     }
 
     // Recalculate total
-    const updatedOrder = await this.recalculateTotal(orderId)
-    this.wsGateway.emitOrderUpdated(updatedOrder)
-    return updatedOrder
+    const updatedOrder = await this.recalculateTotal(orderId);
+    this.wsGateway.emitOrderUpdated(updatedOrder);
+    return updatedOrder;
   }
 
-  async updateItemStatus(orderId: string, itemId: string, status: OrderItemStatus) {
-    const order = await this.findOne(orderId)
-    const item = order.items.find((i) => i.id === itemId)
+  async updateItemStatus(
+    orderId: string,
+    itemId: string,
+    status: OrderItemStatus,
+  ) {
+    const order = await this.findOne(orderId);
+    const item = order.items.find((i) => i.id === itemId);
 
     if (!item) {
-      throw new NotFoundException("Order item not found")
+      throw new NotFoundException("Order item not found");
     }
 
     await this.prisma.orderItem.update({
       where: { id: itemId },
       data: { status },
-    })
+    });
 
-    const updatedOrder = await this.findOne(orderId)
+    const updatedOrder = await this.findOne(orderId);
 
     // Emit appropriate events
     if (status === OrderItemStatus.SENT) {
-      this.wsGateway.emitKitchenNew(updatedOrder, item)
+      this.wsGateway.emitKitchenNew(updatedOrder, item);
     } else if (status === OrderItemStatus.READY) {
-      this.wsGateway.emitKitchenReady(updatedOrder, item)
+      this.wsGateway.emitKitchenReady(updatedOrder, item);
     }
 
-    this.wsGateway.emitItemStatusChanged(updatedOrder, itemId, status)
-    return updatedOrder
+    this.wsGateway.emitItemStatusChanged(updatedOrder, itemId, status);
+    return updatedOrder;
   }
 
   async sendToKitchen(orderId: string) {
-    const order = await this.findOne(orderId)
+    const order = await this.findOne(orderId);
 
     // Get pending items that require kitchen
-    const pendingItems = order.items.filter((i) => i.status === OrderItemStatus.PENDING && i.menuItem.requiresKitchen)
+    const pendingItems = order.items.filter(
+      (i) => i.status === OrderItemStatus.PENDING && i.menuItem.requiresKitchen,
+    );
 
     if (pendingItems.length === 0) {
-      throw new BadRequestException("No pending items to send to kitchen")
+      throw new BadRequestException("No pending items to send to kitchen");
     }
 
     // Update items to SENT status
@@ -169,12 +182,13 @@ export class OrdersService {
         id: { in: pendingItems.map((i) => i.id) },
       },
       data: { status: OrderItemStatus.SENT },
-    })
+    });
 
     // Update non-kitchen items to READY
     const nonKitchenItems = order.items.filter(
-      (i) => i.status === OrderItemStatus.PENDING && !i.menuItem.requiresKitchen,
-    )
+      (i) =>
+        i.status === OrderItemStatus.PENDING && !i.menuItem.requiresKitchen,
+    );
 
     if (nonKitchenItems.length > 0) {
       await this.prisma.orderItem.updateMany({
@@ -182,29 +196,33 @@ export class OrdersService {
           id: { in: nonKitchenItems.map((i) => i.id) },
         },
         data: { status: OrderItemStatus.READY },
-      })
+      });
     }
 
     // Update order status
     await this.prisma.order.update({
       where: { id: orderId },
       data: { status: OrderStatus.SENT },
-    })
+    });
 
-    const updatedOrder = await this.findOne(orderId)
-    this.wsGateway.emitOrderUpdated(updatedOrder)
-    this.wsGateway.emitKitchenNew(updatedOrder, null)
-    return updatedOrder
+    const updatedOrder = await this.findOne(orderId);
+    this.wsGateway.emitOrderUpdated(updatedOrder);
+    this.wsGateway.emitKitchenNew(updatedOrder, null);
+    return updatedOrder;
   }
 
   async markPaid(orderId: string) {
-    const order = await this.findOne(orderId)
+    const order = await this.findOne(orderId);
 
     // Check all items are delivered
-    const undelivered = order.items.filter((i) => i.status !== OrderItemStatus.DELIVERED)
+    const undelivered = order.items.filter(
+      (i) => i.status !== OrderItemStatus.DELIVERED,
+    );
 
     if (undelivered.length > 0) {
-      throw new BadRequestException("All items must be delivered before payment")
+      throw new BadRequestException(
+        "All items must be delivered before payment",
+      );
     }
 
     await this.prisma.order.update({
@@ -213,38 +231,41 @@ export class OrdersService {
         status: OrderStatus.PAID,
         paidAt: new Date(),
       },
-    })
+    });
 
-    const updatedOrder = await this.findOne(orderId)
-    this.wsGateway.emitOrderUpdated(updatedOrder)
-    return updatedOrder
+    const updatedOrder = await this.findOne(orderId);
+    this.wsGateway.emitOrderUpdated(updatedOrder);
+    return updatedOrder;
   }
 
   async cancel(orderId: string) {
-    await this.findOne(orderId)
+    await this.findOne(orderId);
 
     await this.prisma.order.update({
       where: { id: orderId },
       data: { status: OrderStatus.CANCELLED },
-    })
+    });
 
-    const updatedOrder = await this.findOne(orderId)
-    this.wsGateway.emitOrderUpdated(updatedOrder)
-    return updatedOrder
+    const updatedOrder = await this.findOne(orderId);
+    this.wsGateway.emitOrderUpdated(updatedOrder);
+    return updatedOrder;
   }
 
   private async recalculateTotal(orderId: string) {
     const items = await this.prisma.orderItem.findMany({
       where: { orderId },
-    })
+    });
 
-    const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0)
+    const total = items.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0,
+    );
 
     await this.prisma.order.update({
       where: { id: orderId },
       data: { total },
-    })
+    });
 
-    return this.findOne(orderId)
+    return this.findOne(orderId);
   }
 }

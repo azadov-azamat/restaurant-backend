@@ -50,14 +50,14 @@ let OrdersController = class OrdersController {
 exports.OrdersController = OrdersController;
 __decorate([
     (0, common_1.Get)(),
-    __param(1, (0, common_1.Query)('status')),
+    __param(1, (0, common_1.Query)("status")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, String]),
     __metadata("design:returntype", void 0)
 ], OrdersController.prototype, "findAll", null);
 __decorate([
-    (0, common_1.Get)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    (0, common_1.Get)(":id"),
+    __param(0, (0, common_1.Param)("id")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
@@ -73,7 +73,7 @@ __decorate([
 __decorate([
     (0, common_1.Patch)(":id/items"),
     (0, roles_decorator_1.Roles)(client_1.UserRole.WAITER),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, (0, common_1.Param)("id")),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, Function]),
@@ -82,33 +82,33 @@ __decorate([
 __decorate([
     (0, common_1.Patch)(":id/item/:itemId/status"),
     (0, roles_decorator_1.Roles)(client_1.UserRole.WAITER, client_1.UserRole.CHEF),
-    __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Param)('itemId')),
-    __param(2, (0, common_1.Body)('status')),
+    __param(0, (0, common_1.Param)("id")),
+    __param(1, (0, common_1.Param)("itemId")),
+    __param(2, (0, common_1.Body)("status")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String, String]),
     __metadata("design:returntype", void 0)
 ], OrdersController.prototype, "updateItemStatus", null);
 __decorate([
-    (0, common_1.Patch)(':id/send'),
+    (0, common_1.Patch)(":id/send"),
     (0, roles_decorator_1.Roles)(client_1.UserRole.WAITER),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, (0, common_1.Param)("id")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], OrdersController.prototype, "sendToKitchen", null);
 __decorate([
-    (0, common_1.Patch)(':id/pay'),
+    (0, common_1.Patch)(":id/pay"),
     (0, roles_decorator_1.Roles)(client_1.UserRole.WAITER),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, (0, common_1.Param)("id")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], OrdersController.prototype, "markPaid", null);
 __decorate([
-    (0, common_1.Delete)(':id'),
+    (0, common_1.Delete)(":id"),
     (0, roles_decorator_1.Roles)(client_1.UserRole.WAITER, client_1.UserRole.MANAGER, client_1.UserRole.ADMIN),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, (0, common_1.Param)("id")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)

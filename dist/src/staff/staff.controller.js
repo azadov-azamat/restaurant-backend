@@ -30,7 +30,9 @@ let StaffController = class StaffController {
         return this.staffService.findOne(id);
     }
     create(dto, user) {
-        const allowedRoles = user.role === client_1.UserRole.MANAGER ? [client_1.UserRole.WAITER, client_1.UserRole.CHEF] : undefined;
+        const allowedRoles = user.role === client_1.UserRole.MANAGER
+            ? [client_1.UserRole.WAITER, client_1.UserRole.CHEF]
+            : undefined;
         return this.staffService.create(dto, allowedRoles);
     }
     update(id, dto) {
@@ -48,8 +50,8 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], StaffController.prototype, "findAll", null);
 __decorate([
-    (0, common_1.Get)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    (0, common_1.Get)(":id"),
+    __param(0, (0, common_1.Param)("id")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
@@ -66,16 +68,16 @@ __decorate([
 __decorate([
     (0, common_1.Patch)(":id"),
     (0, roles_decorator_1.Roles)(client_1.UserRole.ADMIN, client_1.UserRole.MANAGER),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, (0, common_1.Param)("id")),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, Function]),
     __metadata("design:returntype", void 0)
 ], StaffController.prototype, "update", null);
 __decorate([
-    (0, common_1.Delete)(':id'),
+    (0, common_1.Delete)(":id"),
     (0, roles_decorator_1.Roles)(client_1.UserRole.ADMIN),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, (0, common_1.Param)("id")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
