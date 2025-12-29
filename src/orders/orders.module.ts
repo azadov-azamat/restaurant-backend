@@ -1,0 +1,11 @@
+import { Module } from "@nestjs/common"
+import { OrdersService } from "./orders.service"
+import { OrdersController } from "./orders.controller"
+import { WebsocketModule } from "../websocket/websocket.module"
+
+@Module({
+  imports: [WebsocketModule],
+  controllers: [OrdersController],
+  providers: [OrdersService],
+})
+export class OrdersModule {}
