@@ -1,4 +1,4 @@
-import type { PrismaService } from "../prisma/prisma.service";
+import { PrismaService } from "../prisma/prisma.service";
 import type { CreateMenuItemDto } from "./dto/create-menu-item.dto";
 import type { UpdateMenuItemDto } from "./dto/update-menu-item.dto";
 export declare class MenuService {

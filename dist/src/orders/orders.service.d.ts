@@ -1,4 +1,4 @@
-import type { PrismaService } from "../prisma/prisma.service";
+import { PrismaService } from "../prisma/prisma.service";
 import type { CreateOrderDto } from "./dto/create-order.dto";
 import type { AddItemsDto } from "./dto/add-items.dto";
 import { OrderStatus, OrderItemStatus, UserRole } from "@prisma/client";
