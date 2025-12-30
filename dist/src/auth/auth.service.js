@@ -20,6 +20,7 @@ let AuthService = class AuthService {
         this.jwtService = jwtService;
     }
     async login(dto) {
+        console.log("dto", dto);
         try {
             const user = await this.prisma.user.findUnique({
                 where: { username: dto.username },
