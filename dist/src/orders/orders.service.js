@@ -44,6 +44,7 @@ let OrdersService = class OrdersService {
                 waiter: { select: { id: true, name: true } },
                 items: {
                     include: { menuItem: { include: { category: true } } },
+                    orderBy: { createdAt: "asc" },
                 },
             },
             orderBy: { createdAt: "desc" },
@@ -58,15 +59,28 @@ let OrdersService = class OrdersService {
                 waiter: { select: { id: true, name: true } },
                 items: {
                     include: { menuItem: { include: { category: true } } },
+                    orderBy: { createdAt: "asc" },
                 },
             },
         });
         if (!order) {
-            throw new common_1.NotFoundException("Order not found");
+            throw new common_1.NotFoundException(`Order with ID ${id} not found`);
         }
         return order;
     }
     async create(dto, waiterId) {
+        const room = await this.prisma.room.findUnique({
+            where: { id: dto.roomId },
+        });
+        if (!room) {
+            throw new common_1.NotFoundException(`Room with ID ${dto.roomId} not found`);
+        }
+        const table = await this.prisma.roomElement.findUnique({
+            where: { id: dto.tableId },
+        });
+        if (!table || table.type !== "TABLE") {
+            throw new common_1.BadRequestException("Invalid table ID");
+        }
         const order = await this.prisma.order.create({
             data: {
                 roomId: dto.roomId,
@@ -88,16 +102,23 @@ let OrdersService = class OrdersService {
         const order = await this.findOne(orderId);
         if (order.status === client_1.OrderStatus.PAID ||
             order.status === client_1.OrderStatus.CANCELLED) {
-            throw new common_1.BadRequestException("Cannot modify closed order");
+            throw new common_1.BadRequestException(`Cannot modify order with status ${order.status}`);
         }
+        const menuItemIds = dto.items.map((i) => i.menuItemId);
         const menuItems = await this.prisma.menuItem.findMany({
-            where: { id: { in: dto.items.map((i) => i.menuItemId) } },
+            where: { id: { in: menuItemIds } },
         });
+        if (menuItems.length !== menuItemIds.length) {
+            throw new common_1.BadRequestException("One or more menu items not found");
+        }
         const menuItemMap = new Map(menuItems.map((m) => [m.id, m]));
         for (const item of dto.items) {
             const menuItem = menuItemMap.get(item.menuItemId);
             if (!menuItem)
                 continue;
+            if (!menuItem.inStock) {
+                throw new common_1.BadRequestException(`Menu item "${menuItem.name}" is out of stock`);
+            }
             await this.prisma.orderItem.create({
                 data: {
                     orderId,
@@ -117,7 +138,7 @@ let OrdersService = class OrdersService {
         const order = await this.findOne(orderId);
         const item = order.items.find((i) => i.id === itemId);
         if (!item) {
-            throw new common_1.NotFoundException("Order item not found");
+            throw new common_1.NotFoundException(`Order item with ID ${itemId} not found`);
         }
         await this.prisma.orderItem.update({
             where: { id: itemId },
@@ -167,7 +188,7 @@ let OrdersService = class OrdersService {
         const order = await this.findOne(orderId);
         const undelivered = order.items.filter((i) => i.status !== client_1.OrderItemStatus.DELIVERED);
         if (undelivered.length > 0) {
-            throw new common_1.BadRequestException("All items must be delivered before payment");
+            throw new common_1.BadRequestException("All items must be delivered before marking as paid");
         }
         await this.prisma.order.update({
             where: { id: orderId },
@@ -188,7 +209,7 @@ let OrdersService = class OrdersService {
         });
         const updatedOrder = await this.findOne(orderId);
         this.wsGateway.emitOrderUpdated(updatedOrder);
-        return updatedOrder;
+        return { message: "Order cancelled successfully", order: updatedOrder };
     }
     async recalculateTotal(orderId) {
         const items = await this.prisma.orderItem.findMany({

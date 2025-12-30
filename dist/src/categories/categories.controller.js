@@ -16,6 +16,7 @@ exports.CategoriesController = void 0;
 const common_1 = require("@nestjs/common");
 const passport_1 = require("@nestjs/passport");
 const client_1 = require("@prisma/client");
+const swagger_1 = require("@nestjs/swagger");
 const categories_service_1 = require("./categories.service");
 const create_category_dto_1 = require("./dto/create-category.dto");
 const update_category_dto_1 = require("./dto/update-category.dto");
@@ -44,12 +45,18 @@ let CategoriesController = class CategoriesController {
 exports.CategoriesController = CategoriesController;
 __decorate([
     (0, common_1.Get)(),
+    (0, swagger_1.ApiOperation)({ summary: "Get all categories" }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: "List of categories" }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], CategoriesController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)(":id"),
+    (0, swagger_1.ApiOperation)({ summary: "Get category by ID" }),
+    (0, swagger_1.ApiParam)({ name: "id", description: "Category ID" }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: "Category found" }),
+    (0, swagger_1.ApiResponse)({ status: 404, description: "Category not found" }),
     __param(0, (0, common_1.Param)("id")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -58,6 +65,8 @@ __decorate([
 __decorate([
     (0, common_1.Post)(),
     (0, roles_decorator_1.Roles)(client_1.UserRole.ADMIN, client_1.UserRole.MANAGER),
+    (0, swagger_1.ApiOperation)({ summary: "Create category (Admin/Manager only)" }),
+    (0, swagger_1.ApiResponse)({ status: 201, description: "Category created" }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_category_dto_1.CreateCategoryDto]),
@@ -66,6 +75,9 @@ __decorate([
 __decorate([
     (0, common_1.Patch)(":id"),
     (0, roles_decorator_1.Roles)(client_1.UserRole.ADMIN, client_1.UserRole.MANAGER),
+    (0, swagger_1.ApiOperation)({ summary: "Update category (Admin/Manager only)" }),
+    (0, swagger_1.ApiParam)({ name: "id", description: "Category ID" }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: "Category updated" }),
     __param(0, (0, common_1.Param)("id")),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -75,12 +87,21 @@ __decorate([
 __decorate([
     (0, common_1.Delete)(":id"),
     (0, roles_decorator_1.Roles)(client_1.UserRole.ADMIN, client_1.UserRole.MANAGER),
+    (0, swagger_1.ApiOperation)({ summary: "Delete category (Admin/Manager only)" }),
+    (0, swagger_1.ApiParam)({ name: "id", description: "Category ID" }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: "Category deleted" }),
+    (0, swagger_1.ApiResponse)({
+        status: 400,
+        description: "Cannot delete category with menu items",
+    }),
     __param(0, (0, common_1.Param)("id")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], CategoriesController.prototype, "remove", null);
 exports.CategoriesController = CategoriesController = __decorate([
+    (0, swagger_1.ApiTags)("Categories"),
+    (0, swagger_1.ApiBearerAuth)("JWT-auth"),
     (0, common_1.Controller)("categories"),
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)("jwt"), roles_guard_1.RolesGuard),
     __metadata("design:paramtypes", [categories_service_1.CategoriesService])

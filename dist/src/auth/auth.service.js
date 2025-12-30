@@ -20,31 +20,43 @@ let AuthService = class AuthService {
         this.jwtService = jwtService;
     }
     async login(dto) {
-        const user = await this.prisma.user.findUnique({
-            where: { username: dto.username },
-        });
-        if (!user) {
-            throw new common_1.UnauthorizedException("Invalid credentials");
-        }
-        const isPasswordValid = await bcrypt.compare(dto.password, user.password);
-        if (!isPasswordValid) {
-            throw new common_1.UnauthorizedException("Invalid credentials");
-        }
-        const payload = { sub: user.id, username: user.username, role: user.role };
-        const token = this.jwtService.sign(payload);
-        return {
-            access_token: token,
-            user: {
-                id: user.id,
+        try {
+            const user = await this.prisma.user.findUnique({
+                where: { username: dto.username },
+            });
+            if (!user) {
+                throw new common_1.UnauthorizedException("Invalid credentials");
+            }
+            const isPasswordValid = await bcrypt.compare(dto.password, user.password);
+            if (!isPasswordValid) {
+                throw new common_1.UnauthorizedException("Invalid credentials");
+            }
+            const payload = {
+                sub: user.id,
                 username: user.username,
-                name: user.name,
                 role: user.role,
-                photo: user.photo,
-            },
-        };
+            };
+            const token = this.jwtService.sign(payload);
+            return {
+                access_token: token,
+                user: {
+                    id: user.id,
+                    username: user.username,
+                    name: user.name,
+                    role: user.role,
+                    photo: user.photo,
+                },
+            };
+        }
+        catch (error) {
+            if (error instanceof common_1.UnauthorizedException) {
+                throw error;
+            }
+            throw new common_1.UnauthorizedException("Authentication failed");
+        }
     }
     async validateUser(userId) {
-        return this.prisma.user.findUnique({
+        const user = await this.prisma.user.findUnique({
             where: { id: userId },
             select: {
                 id: true,
@@ -54,6 +66,10 @@ let AuthService = class AuthService {
                 photo: true,
             },
         });
+        if (!user) {
+            throw new common_1.UnauthorizedException("User not found");
+        }
+        return user;
     }
 };
 exports.AuthService = AuthService;

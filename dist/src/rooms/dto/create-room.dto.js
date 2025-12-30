@@ -11,22 +11,39 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateRoomDto = void 0;
 const class_validator_1 = require("class-validator");
+const swagger_1 = require("@nestjs/swagger");
 class CreateRoomDto {
 }
 exports.CreateRoomDto = CreateRoomDto;
 __decorate([
+    (0, swagger_1.ApiProperty)({
+        example: "Main Hall",
+        description: "Room name",
+    }),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateRoomDto.prototype, "name", void 0);
 __decorate([
+    (0, swagger_1.ApiProperty)({
+        example: "clxxx-floor-id",
+        description: "Floor ID",
+    }),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateRoomDto.prototype, "floorId", void 0);
 __decorate([
+    (0, swagger_1.ApiProperty)({
+        example: 15.5,
+        description: "Room width in meters",
+    }),
     (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
 ], CreateRoomDto.prototype, "width", void 0);
 __decorate([
+    (0, swagger_1.ApiProperty)({
+        example: 12.0,
+        description: "Room height in meters",
+    }),
     (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
 ], CreateRoomDto.prototype, "height", void 0);

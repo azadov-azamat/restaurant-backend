@@ -19,7 +19,6 @@ export class OrdersService {
   async findAll(userId: string, userRole: UserRole, status?: OrderStatus) {
     const where: any = {};
 
-    // Filter by status if provided
     if (status) {
       where.status = status;
     }
@@ -29,7 +28,7 @@ export class OrdersService {
       where.waiterId = userId;
     }
 
-    // Chef sees only orders with items sent to kitchen
+    // Chef sees only orders with items in kitchen
     if (userRole === UserRole.CHEF) {
       where.items = {
         some: {
@@ -48,6 +47,7 @@ export class OrdersService {
         waiter: { select: { id: true, name: true } },
         items: {
           include: { menuItem: { include: { category: true } } },
+          orderBy: { createdAt: "asc" },
         },
       },
       orderBy: { createdAt: "desc" },
@@ -63,18 +63,36 @@ export class OrdersService {
         waiter: { select: { id: true, name: true } },
         items: {
           include: { menuItem: { include: { category: true } } },
+          orderBy: { createdAt: "asc" },
         },
       },
     });
 
     if (!order) {
-      throw new NotFoundException("Order not found");
+      throw new NotFoundException(`Order with ID ${id} not found`);
     }
 
     return order;
   }
 
   async create(dto: CreateOrderDto, waiterId: string) {
+    // Verify room and table exist
+    const room = await this.prisma.room.findUnique({
+      where: { id: dto.roomId },
+    });
+
+    if (!room) {
+      throw new NotFoundException(`Room with ID ${dto.roomId} not found`);
+    }
+
+    const table = await this.prisma.roomElement.findUnique({
+      where: { id: dto.tableId },
+    });
+
+    if (!table || table.type !== "TABLE") {
+      throw new BadRequestException("Invalid table ID");
+    }
+
     const order = await this.prisma.order.create({
       data: {
         roomId: dto.roomId,
@@ -101,13 +119,20 @@ export class OrdersService {
       order.status === OrderStatus.PAID ||
       order.status === OrderStatus.CANCELLED
     ) {
-      throw new BadRequestException("Cannot modify closed order");
+      throw new BadRequestException(
+        `Cannot modify order with status ${order.status}`,
+      );
     }
 
-    // Get menu items to calculate prices
+    // Get menu items and validate
+    const menuItemIds = dto.items.map((i) => i.menuItemId);
     const menuItems = await this.prisma.menuItem.findMany({
-      where: { id: { in: dto.items.map((i) => i.menuItemId) } },
+      where: { id: { in: menuItemIds } },
     });
+
+    if (menuItems.length !== menuItemIds.length) {
+      throw new BadRequestException("One or more menu items not found");
+    }
 
     const menuItemMap = new Map(menuItems.map((m) => [m.id, m]));
 
@@ -115,6 +140,12 @@ export class OrdersService {
     for (const item of dto.items) {
       const menuItem = menuItemMap.get(item.menuItemId);
       if (!menuItem) continue;
+
+      if (!menuItem.inStock) {
+        throw new BadRequestException(
+          `Menu item "${menuItem.name}" is out of stock`,
+        );
+      }
 
       await this.prisma.orderItem.create({
         data: {
@@ -128,7 +159,6 @@ export class OrdersService {
       });
     }
 
-    // Recalculate total
     const updatedOrder = await this.recalculateTotal(orderId);
     this.wsGateway.emitOrderUpdated(updatedOrder);
     return updatedOrder;
@@ -143,7 +173,7 @@ export class OrdersService {
     const item = order.items.find((i) => i.id === itemId);
 
     if (!item) {
-      throw new NotFoundException("Order item not found");
+      throw new NotFoundException(`Order item with ID ${itemId} not found`);
     }
 
     await this.prisma.orderItem.update({
@@ -167,7 +197,6 @@ export class OrdersService {
   async sendToKitchen(orderId: string) {
     const order = await this.findOne(orderId);
 
-    // Get pending items that require kitchen
     const pendingItems = order.items.filter(
       (i) => i.status === OrderItemStatus.PENDING && i.menuItem.requiresKitchen,
     );
@@ -176,7 +205,7 @@ export class OrdersService {
       throw new BadRequestException("No pending items to send to kitchen");
     }
 
-    // Update items to SENT status
+    // Update kitchen items to SENT
     await this.prisma.orderItem.updateMany({
       where: {
         id: { in: pendingItems.map((i) => i.id) },
@@ -214,14 +243,13 @@ export class OrdersService {
   async markPaid(orderId: string) {
     const order = await this.findOne(orderId);
 
-    // Check all items are delivered
     const undelivered = order.items.filter(
       (i) => i.status !== OrderItemStatus.DELIVERED,
     );
 
     if (undelivered.length > 0) {
       throw new BadRequestException(
-        "All items must be delivered before payment",
+        "All items must be delivered before marking as paid",
       );
     }
 
@@ -248,7 +276,7 @@ export class OrdersService {
 
     const updatedOrder = await this.findOne(orderId);
     this.wsGateway.emitOrderUpdated(updatedOrder);
-    return updatedOrder;
+    return { message: "Order cancelled successfully", order: updatedOrder };
   }
 
   private async recalculateTotal(orderId: string) {

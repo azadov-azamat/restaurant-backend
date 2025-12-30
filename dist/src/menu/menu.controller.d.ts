@@ -7,90 +7,90 @@ export declare class MenuController {
     findAll(categoryId?: string, inStock?: string): import(".prisma/client").Prisma.PrismaPromise<({
         category: {
             id: string;
+            name: string;
             createdAt: Date;
             updatedAt: Date;
-            name: string;
             color: string;
         };
     } & {
         id: string;
+        name: string;
         createdAt: Date;
         updatedAt: Date;
-        name: string;
         type: import(".prisma/client").$Enums.MenuItemType;
-        quantity: number | null;
-        price: number;
         description: string | null;
+        price: number;
         image: string | null;
         categoryId: string;
         requiresKitchen: boolean;
         inStock: boolean;
+        quantity: number | null;
     })[]>;
     findOne(id: string): Promise<{
         category: {
             id: string;
+            name: string;
             createdAt: Date;
             updatedAt: Date;
-            name: string;
             color: string;
         };
     } & {
         id: string;
+        name: string;
         createdAt: Date;
         updatedAt: Date;
-        name: string;
         type: import(".prisma/client").$Enums.MenuItemType;
-        quantity: number | null;
-        price: number;
         description: string | null;
+        price: number;
         image: string | null;
         categoryId: string;
         requiresKitchen: boolean;
         inStock: boolean;
+        quantity: number | null;
     }>;
     create(dto: CreateMenuItemDto): import(".prisma/client").Prisma.Prisma__MenuItemClient<{
         category: {
             id: string;
+            name: string;
             createdAt: Date;
             updatedAt: Date;
-            name: string;
             color: string;
         };
     } & {
         id: string;
+        name: string;
         createdAt: Date;
         updatedAt: Date;
-        name: string;
         type: import(".prisma/client").$Enums.MenuItemType;
-        quantity: number | null;
-        price: number;
         description: string | null;
+        price: number;
         image: string | null;
         categoryId: string;
         requiresKitchen: boolean;
         inStock: boolean;
+        quantity: number | null;
     }, never, import("@prisma/client/runtime/library").DefaultArgs, import(".prisma/client").Prisma.PrismaClientOptions>;
     update(id: string, dto: UpdateMenuItemDto): Promise<{
         category: {
             id: string;
+            name: string;
             createdAt: Date;
             updatedAt: Date;
-            name: string;
             color: string;
         };
     } & {
         id: string;
+        name: string;
         createdAt: Date;
         updatedAt: Date;
-        name: string;
         type: import(".prisma/client").$Enums.MenuItemType;
-        quantity: number | null;
-        price: number;
         description: string | null;
+        price: number;
         image: string | null;
         categoryId: string;
         requiresKitchen: boolean;
         inStock: boolean;
+        quantity: number | null;
     }>;
     remove(id: string): Promise<{
         message: string;

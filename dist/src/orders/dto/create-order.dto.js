@@ -10,19 +10,32 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateOrderDto = void 0;
+const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 class CreateOrderDto {
 }
 exports.CreateOrderDto = CreateOrderDto;
 __decorate([
+    (0, swagger_1.ApiProperty)({
+        example: "clxxx-room-id",
+        description: "Room ID where the table is located",
+    }),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateOrderDto.prototype, "roomId", void 0);
 __decorate([
+    (0, swagger_1.ApiProperty)({
+        example: "clxxx-table-id",
+        description: "Table ID (RoomElement ID with type TABLE)",
+    }),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateOrderDto.prototype, "tableId", void 0);
 __decorate([
+    (0, swagger_1.ApiPropertyOptional)({
+        example: "Please serve quickly",
+        description: "Additional notes for the order",
+    }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)

@@ -16,6 +16,7 @@ exports.RoomsController = void 0;
 const common_1 = require("@nestjs/common");
 const passport_1 = require("@nestjs/passport");
 const client_1 = require("@prisma/client");
+const swagger_1 = require("@nestjs/swagger");
 const rooms_service_1 = require("./rooms.service");
 const create_room_dto_1 = require("./dto/create-room.dto");
 const update_room_dto_1 = require("./dto/update-room.dto");
@@ -48,12 +49,23 @@ let RoomsController = class RoomsController {
 exports.RoomsController = RoomsController;
 __decorate([
     (0, common_1.Get)(),
+    (0, swagger_1.ApiOperation)({ summary: "Get all rooms" }),
+    (0, swagger_1.ApiQuery)({
+        name: "floorId",
+        required: false,
+        description: "Filter by floor ID",
+    }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: "List of rooms" }),
+    __param(0, (0, common_1.Query)("floorId")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], RoomsController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)(":id"),
+    (0, swagger_1.ApiOperation)({ summary: "Get room with elements" }),
+    (0, swagger_1.ApiParam)({ name: "id", description: "Room ID" }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: "Room found with layout" }),
     __param(0, (0, common_1.Param)("id")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -62,6 +74,8 @@ __decorate([
 __decorate([
     (0, common_1.Post)(),
     (0, roles_decorator_1.Roles)(client_1.UserRole.ADMIN, client_1.UserRole.MANAGER),
+    (0, swagger_1.ApiOperation)({ summary: "Create room (Admin/Manager only)" }),
+    (0, swagger_1.ApiResponse)({ status: 201, description: "Room created" }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_room_dto_1.CreateRoomDto]),
@@ -70,6 +84,9 @@ __decorate([
 __decorate([
     (0, common_1.Patch)(":id"),
     (0, roles_decorator_1.Roles)(client_1.UserRole.ADMIN, client_1.UserRole.MANAGER),
+    (0, swagger_1.ApiOperation)({ summary: "Update room (Admin/Manager only)" }),
+    (0, swagger_1.ApiParam)({ name: "id", description: "Room ID" }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: "Room updated" }),
     __param(0, (0, common_1.Param)("id")),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -79,6 +96,9 @@ __decorate([
 __decorate([
     (0, common_1.Patch)(":id/elements"),
     (0, roles_decorator_1.Roles)(client_1.UserRole.ADMIN, client_1.UserRole.MANAGER),
+    (0, swagger_1.ApiOperation)({ summary: "Update room layout (Admin/Manager only)" }),
+    (0, swagger_1.ApiParam)({ name: "id", description: "Room ID" }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: "Room layout updated" }),
     __param(0, (0, common_1.Param)("id")),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -88,12 +108,17 @@ __decorate([
 __decorate([
     (0, common_1.Delete)(":id"),
     (0, roles_decorator_1.Roles)(client_1.UserRole.ADMIN, client_1.UserRole.MANAGER),
+    (0, swagger_1.ApiOperation)({ summary: "Delete room (Admin/Manager only)" }),
+    (0, swagger_1.ApiParam)({ name: "id", description: "Room ID" }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: "Room deleted" }),
     __param(0, (0, common_1.Param)("id")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], RoomsController.prototype, "remove", null);
 exports.RoomsController = RoomsController = __decorate([
+    (0, swagger_1.ApiTags)("Rooms"),
+    (0, swagger_1.ApiBearerAuth)("JWT-auth"),
     (0, common_1.Controller)("rooms"),
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)("jwt"), roles_guard_1.RolesGuard),
     __metadata("design:paramtypes", [rooms_service_1.RoomsService])
