@@ -17,9 +17,9 @@ export declare class FloorsService {
     } & {
         id: string;
         name: string;
-        level: number;
         createdAt: Date;
         updatedAt: Date;
+        level: number;
     })[]>;
     findOne(id: string): Promise<{
         rooms: {
@@ -34,23 +34,23 @@ export declare class FloorsService {
     } & {
         id: string;
         name: string;
-        level: number;
         createdAt: Date;
         updatedAt: Date;
+        level: number;
     }>;
     create(dto: CreateFloorDto): import(".prisma/client").Prisma.Prisma__FloorClient<{
         id: string;
         name: string;
-        level: number;
         createdAt: Date;
         updatedAt: Date;
+        level: number;
     }, never, import("@prisma/client/runtime/library").DefaultArgs, import(".prisma/client").Prisma.PrismaClientOptions>;
     update(id: string, dto: UpdateFloorDto): Promise<{
         id: string;
         name: string;
-        level: number;
         createdAt: Date;
         updatedAt: Date;
+        level: number;
     }>;
     remove(id: string): Promise<{
         message: string;

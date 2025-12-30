@@ -16,6 +16,7 @@ exports.MenuController = void 0;
 const common_1 = require("@nestjs/common");
 const passport_1 = require("@nestjs/passport");
 const client_1 = require("@prisma/client");
+const swagger_1 = require("@nestjs/swagger");
 const menu_service_1 = require("./menu.service");
 const create_menu_item_dto_1 = require("./dto/create-menu-item.dto");
 const update_menu_item_dto_1 = require("./dto/update-menu-item.dto");
@@ -44,12 +45,40 @@ let MenuController = class MenuController {
 exports.MenuController = MenuController;
 __decorate([
     (0, common_1.Get)(),
+    (0, swagger_1.ApiOperation)({ summary: "Get all menu items" }),
+    (0, swagger_1.ApiQuery)({
+        name: "categoryId",
+        required: false,
+        description: "Filter by category ID",
+    }),
+    (0, swagger_1.ApiQuery)({
+        name: "inStock",
+        required: false,
+        type: Boolean,
+        description: "Filter by stock availability",
+    }),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        description: "List of menu items",
+    }),
+    __param(0, (0, common_1.Query)("categoryId")),
+    __param(1, (0, common_1.Query)("inStock")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", void 0)
 ], MenuController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)(":id"),
+    (0, swagger_1.ApiOperation)({ summary: "Get menu item by ID" }),
+    (0, swagger_1.ApiParam)({ name: "id", description: "Menu item ID" }),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        description: "Menu item found",
+    }),
+    (0, swagger_1.ApiResponse)({
+        status: 404,
+        description: "Menu item not found",
+    }),
     __param(0, (0, common_1.Param)("id")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -58,6 +87,11 @@ __decorate([
 __decorate([
     (0, common_1.Post)(),
     (0, roles_decorator_1.Roles)(client_1.UserRole.ADMIN, client_1.UserRole.MANAGER),
+    (0, swagger_1.ApiOperation)({ summary: "Create menu item (Admin/Manager only)" }),
+    (0, swagger_1.ApiResponse)({
+        status: 201,
+        description: "Menu item created successfully",
+    }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_menu_item_dto_1.CreateMenuItemDto]),
@@ -66,6 +100,16 @@ __decorate([
 __decorate([
     (0, common_1.Patch)(":id"),
     (0, roles_decorator_1.Roles)(client_1.UserRole.ADMIN, client_1.UserRole.MANAGER),
+    (0, swagger_1.ApiOperation)({ summary: "Update menu item (Admin/Manager only)" }),
+    (0, swagger_1.ApiParam)({ name: "id", description: "Menu item ID" }),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        description: "Menu item updated successfully",
+    }),
+    (0, swagger_1.ApiResponse)({
+        status: 404,
+        description: "Menu item not found",
+    }),
     __param(0, (0, common_1.Param)("id")),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -75,12 +119,24 @@ __decorate([
 __decorate([
     (0, common_1.Delete)(":id"),
     (0, roles_decorator_1.Roles)(client_1.UserRole.ADMIN, client_1.UserRole.MANAGER),
+    (0, swagger_1.ApiOperation)({ summary: "Delete menu item (Admin/Manager only)" }),
+    (0, swagger_1.ApiParam)({ name: "id", description: "Menu item ID" }),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        description: "Menu item deleted successfully",
+    }),
+    (0, swagger_1.ApiResponse)({
+        status: 404,
+        description: "Menu item not found",
+    }),
     __param(0, (0, common_1.Param)("id")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], MenuController.prototype, "remove", null);
 exports.MenuController = MenuController = __decorate([
+    (0, swagger_1.ApiTags)("Menu"),
+    (0, swagger_1.ApiBearerAuth)("JWT-auth"),
     (0, common_1.Controller)("menu"),
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)("jwt"), roles_guard_1.RolesGuard),
     __metadata("design:paramtypes", [menu_service_1.MenuService])

@@ -15,12 +15,11 @@ export declare class RoomsService {
         };
         elements: {
             id: string;
-            width: number;
-            height: number;
             createdAt: Date;
             updatedAt: Date;
-            roomId: string;
             type: import(".prisma/client").$Enums.ElementType;
+            width: number;
+            height: number;
             x: number;
             y: number;
             rotation: number;
@@ -28,15 +27,16 @@ export declare class RoomsService {
             seats: number | null;
             isRound: boolean;
             swingDirection: string | null;
+            roomId: string;
         }[];
     } & {
         id: string;
         name: string;
+        createdAt: Date;
+        updatedAt: Date;
         floorId: string;
         width: number;
         height: number;
-        createdAt: Date;
-        updatedAt: Date;
     })[]>;
     findOne(id: string): Promise<{
         floor: {
@@ -48,12 +48,11 @@ export declare class RoomsService {
         };
         elements: {
             id: string;
-            width: number;
-            height: number;
             createdAt: Date;
             updatedAt: Date;
-            roomId: string;
             type: import(".prisma/client").$Enums.ElementType;
+            width: number;
+            height: number;
             x: number;
             y: number;
             rotation: number;
@@ -61,15 +60,16 @@ export declare class RoomsService {
             seats: number | null;
             isRound: boolean;
             swingDirection: string | null;
+            roomId: string;
         }[];
     } & {
         id: string;
         name: string;
+        createdAt: Date;
+        updatedAt: Date;
         floorId: string;
         width: number;
         height: number;
-        createdAt: Date;
-        updatedAt: Date;
     }>;
     create(dto: CreateRoomDto): import(".prisma/client").Prisma.Prisma__RoomClient<{
         floor: {
@@ -82,11 +82,11 @@ export declare class RoomsService {
     } & {
         id: string;
         name: string;
+        createdAt: Date;
+        updatedAt: Date;
         floorId: string;
         width: number;
         height: number;
-        createdAt: Date;
-        updatedAt: Date;
     }, never, import("@prisma/client/runtime/library").DefaultArgs, import(".prisma/client").Prisma.PrismaClientOptions>;
     update(id: string, dto: UpdateRoomDto): Promise<{
         floor: {
@@ -99,11 +99,11 @@ export declare class RoomsService {
     } & {
         id: string;
         name: string;
+        createdAt: Date;
+        updatedAt: Date;
         floorId: string;
         width: number;
         height: number;
-        createdAt: Date;
-        updatedAt: Date;
     }>;
     updateElements(id: string, dto: UpdateElementsDto): Promise<{
         floor: {
@@ -115,12 +115,11 @@ export declare class RoomsService {
         };
         elements: {
             id: string;
-            width: number;
-            height: number;
             createdAt: Date;
             updatedAt: Date;
-            roomId: string;
             type: import(".prisma/client").$Enums.ElementType;
+            width: number;
+            height: number;
             x: number;
             y: number;
             rotation: number;
@@ -128,15 +127,16 @@ export declare class RoomsService {
             seats: number | null;
             isRound: boolean;
             swingDirection: string | null;
+            roomId: string;
         }[];
     } & {
         id: string;
         name: string;
+        createdAt: Date;
+        updatedAt: Date;
         floorId: string;
         width: number;
         height: number;
-        createdAt: Date;
-        updatedAt: Date;
     }>;
     remove(id: string): Promise<{
         message: string;

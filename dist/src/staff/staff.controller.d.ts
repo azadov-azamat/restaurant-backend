@@ -7,39 +7,39 @@ export declare class StaffController {
     constructor(staffService: StaffService);
     findAll(role?: UserRole): Promise<{
         id: string;
-        createdAt: Date;
         username: string;
         name: string;
         role: import(".prisma/client").$Enums.UserRole;
         photo: string | null;
         phone: string | null;
+        createdAt: Date;
     }[]>;
     findOne(id: string): Promise<{
         id: string;
-        createdAt: Date;
         username: string;
         name: string;
         role: import(".prisma/client").$Enums.UserRole;
         photo: string | null;
         phone: string | null;
+        createdAt: Date;
     }>;
     create(dto: CreateStaffDto, user: any): Promise<{
         id: string;
-        createdAt: Date;
         username: string;
         name: string;
         role: import(".prisma/client").$Enums.UserRole;
         photo: string | null;
         phone: string | null;
+        createdAt: Date;
     }>;
     update(id: string, dto: UpdateStaffDto): Promise<{
         id: string;
-        createdAt: Date;
         username: string;
         name: string;
         role: import(".prisma/client").$Enums.UserRole;
         photo: string | null;
         phone: string | null;
+        createdAt: Date;
     }>;
     remove(id: string): Promise<{
         message: string;

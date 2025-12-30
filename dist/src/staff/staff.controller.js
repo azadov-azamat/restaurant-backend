@@ -22,6 +22,7 @@ const update_staff_dto_1 = require("./dto/update-staff.dto");
 const roles_decorator_1 = require("../common/decorators/roles.decorator");
 const roles_guard_1 = require("../common/guards/roles.guard");
 const current_user_decorator_1 = require("../common/decorators/current-user.decorator");
+const swagger_1 = require("@nestjs/swagger");
 let StaffController = class StaffController {
     constructor(staffService) {
         this.staffService = staffService;
@@ -86,6 +87,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], StaffController.prototype, "remove", null);
 exports.StaffController = StaffController = __decorate([
+    (0, swagger_1.ApiBearerAuth)("access-token"),
     (0, common_1.Controller)("staff"),
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)("jwt"), roles_guard_1.RolesGuard),
     __metadata("design:paramtypes", [staff_service_1.StaffService])

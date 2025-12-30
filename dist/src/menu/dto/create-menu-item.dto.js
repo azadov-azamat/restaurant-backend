@@ -12,47 +12,85 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateMenuItemDto = void 0;
 const class_validator_1 = require("class-validator");
 const client_1 = require("@prisma/client");
+const swagger_1 = require("@nestjs/swagger");
 class CreateMenuItemDto {
 }
 exports.CreateMenuItemDto = CreateMenuItemDto;
 __decorate([
+    (0, swagger_1.ApiProperty)({
+        example: "Osh",
+        description: "Name of the menu item",
+    }),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateMenuItemDto.prototype, "name", void 0);
 __decorate([
+    (0, swagger_1.ApiPropertyOptional)({
+        example: "Traditional Uzbek rice dish with meat and vegetables",
+        description: "Description of the menu item",
+    }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateMenuItemDto.prototype, "description", void 0);
 __decorate([
+    (0, swagger_1.ApiProperty)({
+        example: 25000,
+        description: "Price in UZS",
+    }),
     (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
 ], CreateMenuItemDto.prototype, "price", void 0);
 __decorate([
+    (0, swagger_1.ApiPropertyOptional)({
+        example: "https://example.com/osh.jpg",
+        description: "Image URL",
+    }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateMenuItemDto.prototype, "image", void 0);
 __decorate([
+    (0, swagger_1.ApiPropertyOptional)({
+        enum: client_1.MenuItemType,
+        example: client_1.MenuItemType.FOOD,
+        description: "Type of menu item",
+    }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsEnum)(client_1.MenuItemType),
     __metadata("design:type", String)
 ], CreateMenuItemDto.prototype, "type", void 0);
 __decorate([
+    (0, swagger_1.ApiProperty)({
+        example: "clxxx-category-id",
+        description: "Category ID",
+    }),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateMenuItemDto.prototype, "categoryId", void 0);
 __decorate([
+    (0, swagger_1.ApiPropertyOptional)({
+        example: true,
+        description: "Whether item requires kitchen preparation",
+    }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsBoolean)(),
     __metadata("design:type", Boolean)
 ], CreateMenuItemDto.prototype, "requiresKitchen", void 0);
 __decorate([
+    (0, swagger_1.ApiPropertyOptional)({
+        example: true,
+        description: "Whether item is in stock",
+    }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsBoolean)(),
     __metadata("design:type", Boolean)
 ], CreateMenuItemDto.prototype, "inStock", void 0);
 __decorate([
+    (0, swagger_1.ApiPropertyOptional)({
+        example: 50,
+        description: "Available quantity (null = unlimited)",
+    }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsInt)(),
     __metadata("design:type", Number)

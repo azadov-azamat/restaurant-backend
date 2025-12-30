@@ -16,7 +16,9 @@ import { UpdateStaffDto } from "./dto/update-staff.dto";
 import { Roles } from "../common/decorators/roles.decorator";
 import { RolesGuard } from "../common/guards/roles.guard";
 import { CurrentUser } from "../common/decorators/current-user.decorator";
+import { ApiBearerAuth } from "@nestjs/swagger";
 
+@ApiBearerAuth("access-token")
 @Controller("staff")
 @UseGuards(AuthGuard("jwt"), RolesGuard)
 export class StaffController {

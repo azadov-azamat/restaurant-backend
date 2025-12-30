@@ -16,6 +16,7 @@ exports.FloorsController = void 0;
 const common_1 = require("@nestjs/common");
 const passport_1 = require("@nestjs/passport");
 const client_1 = require("@prisma/client");
+const swagger_1 = require("@nestjs/swagger");
 const floors_service_1 = require("./floors.service");
 const create_floor_dto_1 = require("./dto/create-floor.dto");
 const update_floor_dto_1 = require("./dto/update-floor.dto");
@@ -44,12 +45,17 @@ let FloorsController = class FloorsController {
 exports.FloorsController = FloorsController;
 __decorate([
     (0, common_1.Get)(),
+    (0, swagger_1.ApiOperation)({ summary: "Get all floors" }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: "List of floors" }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], FloorsController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)(":id"),
+    (0, swagger_1.ApiOperation)({ summary: "Get floor by ID" }),
+    (0, swagger_1.ApiParam)({ name: "id", description: "Floor ID" }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: "Floor found" }),
     __param(0, (0, common_1.Param)("id")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -58,6 +64,8 @@ __decorate([
 __decorate([
     (0, common_1.Post)(),
     (0, roles_decorator_1.Roles)(client_1.UserRole.ADMIN, client_1.UserRole.MANAGER),
+    (0, swagger_1.ApiOperation)({ summary: "Create floor (Admin/Manager only)" }),
+    (0, swagger_1.ApiResponse)({ status: 201, description: "Floor created" }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_floor_dto_1.CreateFloorDto]),
@@ -66,6 +74,9 @@ __decorate([
 __decorate([
     (0, common_1.Patch)(":id"),
     (0, roles_decorator_1.Roles)(client_1.UserRole.ADMIN, client_1.UserRole.MANAGER),
+    (0, swagger_1.ApiOperation)({ summary: "Update floor (Admin/Manager only)" }),
+    (0, swagger_1.ApiParam)({ name: "id", description: "Floor ID" }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: "Floor updated" }),
     __param(0, (0, common_1.Param)("id")),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -75,12 +86,17 @@ __decorate([
 __decorate([
     (0, common_1.Delete)(":id"),
     (0, roles_decorator_1.Roles)(client_1.UserRole.ADMIN, client_1.UserRole.MANAGER),
+    (0, swagger_1.ApiOperation)({ summary: "Delete floor (Admin/Manager only)" }),
+    (0, swagger_1.ApiParam)({ name: "id", description: "Floor ID" }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: "Floor deleted" }),
     __param(0, (0, common_1.Param)("id")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], FloorsController.prototype, "remove", null);
 exports.FloorsController = FloorsController = __decorate([
+    (0, swagger_1.ApiTags)("Floors"),
+    (0, swagger_1.ApiBearerAuth)("JWT-auth"),
     (0, common_1.Controller)("floors"),
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)("jwt"), roles_guard_1.RolesGuard),
     __metadata("design:paramtypes", [floors_service_1.FloorsService])

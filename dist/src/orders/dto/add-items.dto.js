@@ -12,17 +12,31 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AddItemsDto = void 0;
 const class_validator_1 = require("class-validator");
 const class_transformer_1 = require("class-transformer");
+const swagger_1 = require("@nestjs/swagger");
 class OrderItemDto {
 }
 __decorate([
+    (0, swagger_1.ApiProperty)({
+        example: "clxxx-menu-item-id",
+        description: "Menu item ID",
+    }),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], OrderItemDto.prototype, "menuItemId", void 0);
 __decorate([
+    (0, swagger_1.ApiProperty)({
+        example: 2,
+        description: "Quantity of items",
+    }),
     (0, class_validator_1.IsInt)(),
     __metadata("design:type", Number)
 ], OrderItemDto.prototype, "quantity", void 0);
 __decorate([
+    (0, swagger_1.ApiProperty)({
+        example: "No onions please",
+        description: "Special instructions for this item",
+        required: false,
+    }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
@@ -31,6 +45,21 @@ class AddItemsDto {
 }
 exports.AddItemsDto = AddItemsDto;
 __decorate([
+    (0, swagger_1.ApiProperty)({
+        type: [OrderItemDto],
+        description: "List of items to add to the order",
+        example: [
+            {
+                menuItemId: "clxxx-item-1",
+                quantity: 2,
+                note: "Extra spicy",
+            },
+            {
+                menuItemId: "clxxx-item-2",
+                quantity: 1,
+            },
+        ],
+    }),
     (0, class_validator_1.IsArray)(),
     (0, class_validator_1.ValidateNested)({ each: true }),
     (0, class_transformer_1.Type)(() => OrderItemDto),
