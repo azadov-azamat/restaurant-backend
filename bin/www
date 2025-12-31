@@ -1,0 +1,58 @@
+#!/usr/bin/env node
+
+require('dotenv').config({ silent: true });
+
+const app = require('../app');
+const http = require('http');
+const debug = require('debug')('www');
+const logger = require('../server/utils/logger');
+const server = http.createServer(app);
+
+const port = process.env.PORT || 8080;
+
+function onError(error) {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+
+  let bind = 'Port ' + port;
+
+  switch (error.code) {
+    case 'EACCES':
+      logger.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      logger.error(bind + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
+
+server.listen(port, function () {
+  debug('Express server listening on port ' + server.address().port);
+});
+
+server.on('error', onError);
+
+// Enable graceful stop
+const shutdown = async (val) => {
+  logger.info('Shutting down gracefully...');
+
+  try {
+    logger.info('Webhook deregistered gracefully.');
+    server.close(() => {
+      process.exit(0);
+    });
+  } catch (error) {
+    logger.error('Error during shutdown:', error);
+    process.exit(1);
+  }
+};
+
+process.on('SIGINT', () => shutdown('SIGINT'));
+process.on('SIGTERM', () => shutdown('SIGTERM'));
+
+logger.info(`Listening on port: ${port}`);

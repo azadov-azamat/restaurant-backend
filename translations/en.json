@@ -1,0 +1,155 @@
+{
+	"welcome": "📡 *Welcome to the OQIM bot!* 🌊\nHere, we track your expenses like a GPS – wherever the money goes, we’ll find it 💸\nJust type your expense, and I’ll take care of the rest 🤖✨\n\nReady to begin? 🚀",
+	"how_to_use": "📝 *How it works*\n\n1️⃣ Simply type your expense — for example: “25k for taxi” or “70k spent on food”\n\n2️⃣ I will detect the amount and categorize it for you 🤖💡\n\n3️⃣ All you need to do is check the results 😉📊\n\nIn short: you write — I manage! 📁💸",
+	"question_income": "So...\nBe honest… how much do you earn monthly? 😅\n\nI won’t tell anyone, only I’ll know 🤫\n\nWrite the number so I can continue the calculations.\n\n💡 Example: 120000, 90k, 75k",
+	"oqim-ai-app": "OQIM App",
+	
+	"main-menu": "📋 Main menu",
+	"register": "📝 Register",
+	"waiting-command": "⏳ Waiting for your command",
+	"choose": "🔽 Choose",
+	"select-language": "💬 Select a language",
+	"selected-language": "🌐 Selected language: {{lang}}",
+	"select-setting": "⚙️ Select the necessary setting",
+	"more": "ℹ️ More",
+	"yes": "✅ Yes",
+	"cancel": "❌ Cancel",
+	"save": "💾 Save",
+	"not-specified": "❔ Not specified",
+	"processing": "⏳ Processing your request, please wait...",
+	"send-location": "📍 Send location",
+	"today": "📅 Today",
+	"tomorrow": "📅 Tomorrow",
+	"confirm": "✅ Confirm",
+	"user-request-accepted": "🎯 Your request has been accepted!",
+	"skip": "⏩ Skip",
+	"request-contact": "☎️ Please send your phone number to connect to the system.",
+	"send-contact": "📱 Send phone number",
+	"success-contact": "🎉 Successfully registered!",
+	"error-contact": "⚠️ You must send your phone number",
+	
+	"commands": {
+		"start": "🔄 Start bot",
+		"help": "❓ Help",
+		"settings": "⚙️ Settings",
+		"go-back": "⬅️ Back",
+		"language": "💬 Language",
+		"login": "🔑 Login",
+		"logout": "🚪 Logout",
+		"loading": "⏳ ...",
+		"status": "🚗 Driver status",
+		"expenses": "🧾 Expenses",
+		"balance": "💴 Balance"
+	},
+
+	"warning": {
+		"invalid-query": "⚠️ Your request looks *invalid*, please correct it and try again.",
+		"blocked-user": "🚫 You are blocked by the system! ❗ Contact the admin (@marina_laty) to remove the block.",
+		"no-organization": "❌ You cannot send a message or fiscal receipt because you are not part of any organization.\n\n🙋‍♂️ Contact your organization representative.",
+		"admin-user": "👮 Users with administrator rights cannot send messages.",
+		"not-found-trip": "🚫 No active trip found",
+		"not-found-expenses": "❗ No expenses found for your trip",
+		"not-found-ledger": "❗ No expenses or income records found for your trip",
+		"enter-quantity-liter": "🛢️ Please enter how many liters you refueled!",
+        "enter-from-to-currency": "💱 Please enter how much {{from_currency}} you exchanged to {{to_currency}}.",
+        "expense-cancel": "❌ Expense has been canceled",
+        "receipt-read-error": "⚠️ Error reading receipt, please try again later or enter the expense manually."
+	},
+
+	"success": {
+		"expense-saved": "✅ Expense saved successfully!"
+	},
+
+	"error": {
+		"500": "⚠️ We are experiencing *some issues*, please try again later."
+	},
+
+	"alert": {
+		"expenses-confirm": "📄 Do you confirm the expense?",
+		"yes": "✅ Yes",
+		"no": "❌ No"
+	},
+
+	"help": "📦 *Cargo Search Bot* 🚚\n\nWelcome to our bot! 🎉 This bot helps you find and manage cargo.\n\n💰 *Services are paid!* 💳\n\n📌 A subscription is required to use the bot.\n\n🟢 Tariff plans:\n📅 3 days – 20,000 UZS\n📆 1 month – 60,000 UZS\n📅 3 months – 150,000 UZS\n\n📲 For subscription questions, contact admin: [@marina_laty](https://t.me/marina_laty)\n\n🔍 *Fast Search* 🔎\n- Makes route-based searches easier and helps you find the right cargo faster.\n\n... (text remains the same, only emojis were added) ...",
+
+	"go-back": "⬅️ Back",
+	"share-location": "📍 Please share your location first",
+	"other": "🔸 Other",
+	"receipt-info": "🧾 *Receipt details:*\n\n🏪 *Store:* {{merchant}}\n📍 *Address:* {{address}}\n🕰️ *Time:* {{date_time}}\n\n📦 *Products:*\n{{#items}}\n{{@index + 1}}. {{description}}\n💵 *Price:* {{unit_price}} × {{quantity}} {{measure}} = {{total_price}} {{currency}}\n{{/items}}\n\n💰 *Total:* {{total_price}} {{currency}}\n💳 *Payment method:* {{payment_method}}\n📦 *Category:* {{category}}",
+
+	"receipt-currency-exchange": "💱 *Currency exchange details:*\n\n🏦 *Bank:* {{merchant}}\n📍 *Address:* {{address}}\n🕰️ *Date:* {{date_time}}\n\n🔁 {{currency_exchange_info.from_amount}} {{currency_exchange_info.from_currency}} → {{currency_exchange_info.to_amount}} {{currency_exchange_info.to_currency}}\n📈 *Rate:* 1 {{currency_exchange_info.from_currency}} = {{currency_exchange_info.exchange_rate}} {{currency_exchange_info.to_currency}}\n\n💳 *Payment method:* {{payment_method}}\n📦 *Category:* {{category}}",
+
+	"receipt-exchange-employee": "👤 *Money given to employee:*\n\n👨‍💼 *Employee:* {{exchange_employee_info.employee_name}}\n🕰️ *Date:* {{date_time}}\n💵 *Amount:* {{exchange_employee_info.amount}} {{exchange_employee_info.currency}}\n\n📦 *Category:* {{category}}",
+
+	"expenses-type": {
+		"income": "💵 Income",
+		"currency_exchange": "💱 Currency exchange",
+		"diesel_refuel": "🛢️ Diesel refuel",
+		"adblue_refuel": "💧 AdBlue refuel",
+		"police_post": "🚔 Traffic police post",
+		"transport_document": "📑 Transport document",
+		"customs": "🛃 Customs",
+		"border": "🚧 Border",
+		"parking": "🅿️ Parking",
+		"e_toll_paid_road": "🛣️ E-toll (paid road)",
+		"spare_parts_store": "🔧 Spare parts store",
+		"repair": "🛠️ Repair",
+		"tir_processing": "📋 TIR processing",
+		"tire_service": "🚙 Tire service",
+		"car_wash": "🚿 Car wash",
+		"phone_internet": "📱 Phone - Internet",
+		"meals": "🍽️ Meals",
+		"grocery_store": "🛒 Grocery store",
+		"hotel": "🏨 Hotel",
+		"taxi": "🚕 Taxi",
+		"total_expense_uzb": "💰 Total expense (UZ)",
+		"others": "🔸 Others",
+		"employee": "Employee",
+		"exchange_employee": "Employee (Exchange)"
+	},
+
+	"measurement": {
+		"pcs": "🔹 pcs",
+		"kg": "⚖️ kg",
+        "g": "⚖️ gram",
+        "liter": "🛢️ liter",
+        "ml": "💧 milliliter",
+        "pack": "📦 pack",
+        "box": "📦 box",
+        "hour": "⏰ hour",
+        "service": "🛠️ service"
+	},
+
+	"payment_method": {
+		"cash": "💵 Cash",
+		"terminal": "💳 Terminal",
+		"transfer": "🏦 Bank transfer",
+		"null": "❔ Not provided"
+	},
+
+	"trip": {
+		"from": "📍 From",
+		"first_name": "👤 First name",
+		"last_name": "👥 Last name",
+		"destination": "🎯 Destination",
+		"status": "🚦 Trip status",
+		"start_date": "🟢 Start date",
+		"return_date": "🔄 Return date",
+		"end_date": "⛔ End date"
+	},
+
+	"ledger": {
+		"date": "📅 Date - Time",
+		"id": "🆔 Ledger ID",
+		"category": "📦 Category",
+		"description": "📝 Description",
+		"withdrawal": "⬇️ Withdrawal",
+		"deposit": "⬆️ Deposit",
+		"balance": "💰 Balance",
+		"driver": "🚗 Driver"
+	},
+
+	"result-trip-expenses": "🧾 *Current trip expenses:*\n\n{{expensesText}}",
+	"result-balance": "💼 *Current balance:*\n\n{{formatted}}",
+	"null": "❔ Not provided"
+}

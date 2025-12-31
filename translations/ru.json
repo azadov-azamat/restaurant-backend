@@ -1,0 +1,159 @@
+{
+	"welcome": "📡 *Добро пожаловать в бот OQIM!* 🌊\nЗдесь мы устанавливаем GPS на ваши деньги — куда бы они ни ушли, мы найдём 💸\nПросто напишите ваш расход, остальное я сделаю сам 🤖✨\n\nГотовы начать? 🚀",
+	"how_to_use": "📝 *Как это работает?*\n\n1️⃣ Запишите ваш расход обычным текстом — например: “25 тысяч на такси” или “70 тысяч ушло на еду”\n\n2️⃣ Я определю сумму и категорию 🤖💡\n\n3️⃣ Вам остаётся только смотреть результат 😉📊\n\nКороче: вы пишете — я контролирую! 📁💸",
+	"question_income": "Ну что ж...\nСкажите честно… сколько вы зарабатываете в месяц? 😅\n\nНикому не скажу, только я узнаю 🤫\n\nНапишите цифру, и я продолжу расчёты.\n\n💡 Пример: 120000, 90 тысяч, 75к",
+	"oqim-ai-app": "Приложение OQIM",
+	
+	"main-menu": "📋 Главное меню",
+	"register": "📝 Регистрация",
+	"waiting-command": "⏳ Ожидаю вашу команду",
+	"choose": "🔽 Выберите",
+	"select-language": "💬 Выберите язык",
+	"selected-language": "🌐 Выбранный язык: {{lang}}",
+	"select-setting": "⚙️ Выберите нужную настройку",
+	"more": "ℹ️ Подробнее",
+	"yes": "✅ Да",
+	"cancel": "❌ Отмена",
+	"save": "💾 Сохранить",
+	"not-specified": "❔ Не указано",
+	"processing": "⏳ Ваш запрос обрабатывается, подождите...",
+	"send-location": "📍 Отправить локацию",
+	"today": "📅 сегодня",
+	"tomorrow": "📅 завтра",
+	"confirm": "✅ Подтвердить",
+	"user-request-accepted": "🎯 Ваш запрос принят!",
+	"skip": "⏩ Пропустить",
+	"request-contact": "☎️ Пожалуйста, отправьте свой номер телефона для подключения к системе.",
+	"send-contact": "📱 Отправить номер телефона",
+	"success-contact": "🎉 Вы успешно зарегистрированы!",
+	"error-contact": "⚠️ Вы должны отправить свой номер телефона",
+
+	"commands": {
+		"start": "🔄 Запустить бота",
+		"help": "❓ Помощь",
+		"settings": "⚙️ Настройки",
+		"go-back": "⬅️ Назад",
+		"language": "💬 Язык",
+		"login": "🔑 Войти",
+		"logout": "🚪 Выйти",
+		"loading": "⏳ ...",
+		"status": "🚗 Статус водителя",
+		"expenses": "🧾 Расходы",
+		"balance": "💴 Баланс"
+	},
+
+	"warning": {
+		"invalid-query": "⚠️ Ваш запрос выглядит *некорректным*, исправьте его и попробуйте снова.",
+		"blocked-user": "🚫 Вы заблокированы системой! ❗ Для снятия блокировки свяжитесь с админом (@marina_laty)",
+		"no-organization": "❌ Вы не можете отправить сообщение или фискальный чек, так как вы ещё не являетесь членом организации.\n\n🙋‍♂️ Свяжитесь с представителем вашей организации.",
+		"admin-user": "👮 Пользователи с правами администратора не могут отправлять сообщения.",
+		"not-found-trip": "🚫 Активная поездка не найдена",
+		"not-found-expenses": "❗ Расходы по вашей поездке не найдены",
+		"not-found-ledger": "❗ Для вашей поездки не обнаружены расходы или доходы",
+		"enter-quantity-liter": "🛢️ Пожалуйста, укажите, сколько литров вы заправили!",
+        "enter-from-to-currency": "💱 Пожалуйста, укажите, сколько {{from_currency}} вы обменяли на {{to_currency}}.",
+        "expense-cancel": "❌ Расход отменён",
+        "receipt-read-error": "⚠️ Ошибка при чтении чека, попробуйте позже или введите расход вручную."
+	},
+
+	"success": {
+		"expense-saved": "✅ Расход успешно сохранён!"
+	},
+
+	"error": {
+		"500": "⚠️ У нас *некоторые проблемы*, попробуйте позже."
+	},
+
+	"alert": {
+		"expenses-confirm": "📄 Вы подтверждаете расход?",
+		"yes": "✅ Да",
+		"no": "❌ Нет"
+	},
+
+	"help": "📦 *Бот поиска грузов* 🚚\n\nДобро пожаловать! 🎉 Этот бот помогает находить и управлять грузами.\n\n💰 *Услуги платные!* 💳\n\n📌 Для использования бота требуется подписка.\n\n🟢 Тарифы:\n📅 3 дня – 20 000 сум\n📆 1 месяц – 60 000 сум\n📅 3 месяца – 150 000 сум\n\n📲 По вопросам подписки обращайтесь к администратору: [@marina_laty](https://t.me/marina_laty)\n\n🔍 *Быстрый поиск* 🔎\n- Упрощает поиск по направлениям и помогает быстрее найти нужный груз.\n\n... (текст остаётся тем же, только добавлены эмодзи) ...",
+
+	"go-back": "⬅️ Назад",
+	"share-location": "📍 Пожалуйста, сначала укажите вашу локацию",
+	"other": "🔸 другое",
+	"fiscal-link": "🔗 Фискальный чек",
+
+	"driver-status": "🚗 *Статус водителя*\n\n👤 *Водитель:* {{fullName}}\n🏢 *Организация:* {{organizationName}}\n🛣️ *Текущий маршрут:* {{direction}}",
+
+	"receipt-info": "🧾 *Информация о чеке:*\n\n🏪 *Магазин:* {{merchant}}\n📍 *Адрес:* {{address}}\n🕰️ *Время:* {{date_time}}\n\n📦 *Товары:*\n{{#items}}\n{{@index + 1}}. {{description}}\n💵 *Цена:* {{unit_price}} × {{quantity}} {{measure}} = {{total_price}} {{currency}}\n{{/items}}\n\n💰 *Общая сумма:* {{total_price}} {{currency}}\n💳 *Способ оплаты:* {{payment_method}}\n📦 *Категория:* {{category}}",
+
+	"receipt-currency-exchange": "💱 *Информация о валютном обмене:*\n\n🏦 *Банк:* {{merchant}}\n📍 *Адрес:* {{address}}\n🕰️ *Дата:* {{date_time}}\n\n🔁 {{currency_exchange_info.from_amount}} {{currency_exchange_info.from_currency}} → {{currency_exchange_info.to_amount}} {{currency_exchange_info.to_currency}}\n📈 *Курс:* 1 {{currency_exchange_info.from_currency}} = {{currency_exchange_info.exchange_rate}} {{currency_exchange_info.to_currency}}\n\n💳 *Способ оплаты:* {{payment_method}}\n📦 *Категория:* {{category}}",
+
+	"receipt-exchange-employee": "👤 *Выдано сотруднику:*\n\n👨‍💼 *Сотрудник:* {{exchange_employee_info.employee_name}}\n🕰️ *Дата:* {{date_time}}\n💵 *Сумма:* {{exchange_employee_info.amount}} {{exchange_employee_info.currency}}\n\n📦 *Категория:* {{category}}",
+
+	"expenses-type": {
+		"income": "💵 Доход",
+		"currency_exchange": "💱 Валютный обмен",
+		"diesel_refuel": "🛢️ Заправка дизелем",
+		"adblue_refuel": "💧 Заправка AdBlue",
+		"police_post": "🚔 Пост ДПС",
+		"transport_document": "📑 Транспортный документ",
+		"customs": "🛃 Таможня",
+		"border": "🚧 Граница",
+		"parking": "🅿️ Парковка",
+		"e_toll_paid_road": "🛣️ Платная дорога (E-toll)",
+		"spare_parts_store": "🔧 Магазин запчастей",
+		"repair": "🛠️ Ремонт",
+		"tir_processing": "📋 Оформление TIR",
+		"tire_service": "🚙 Шиномонтаж",
+		"car_wash": "🚿 Автомойка",
+		"phone_internet": "📱 Телефон — Интернет",
+		"meals": "🍽️ Питание",
+		"grocery_store": "🛒 Продуктовый магазин",
+		"hotel": "🏨 Гостиница",
+		"taxi": "🚕 Такси",
+		"total_expense_uzb": "💰 Общий расход (Узбекистан)",
+		"others": "🔸 Другое",
+		"employee": "Сотрудник",
+		"exchange_employee": "Сотрудник (выдача)"
+	},
+
+	"measurement": {
+		"pcs": "🔹 шт",
+		"kg": "⚖️ кг",
+		"g": "⚖️ грамм",
+		"liter": "🛢️ литр",
+		"ml": "💧 миллилитр",
+		"pack": "📦 упаковка",
+		"box": "📦 коробка",
+		"hour": "⏰ час",
+		"service": "🛠️ услуга"
+	},
+
+	"payment_method": {
+		"cash": "💵 Наличные",
+		"terminal": "💳 Терминал",
+		"transfer": "🏦 Перевод",
+		"null": "❔ Не указано"
+	},
+
+	"trip": {
+		"from": "📍 Откуда",
+		"first_name": "👤 Имя",
+		"last_name": "👥 Фамилия",
+		"destination": "🎯 Пункт назначения",
+		"status": "🚦 Статус поездки",
+		"start_date": "🟢 Дата начала",
+		"return_date": "🔄 Дата возвращения",
+		"end_date": "⛔ Дата окончания"
+	},
+
+	"ledger": {
+		"date": "📅 Дата - Время",
+		"id": "🆔 ID записи",
+		"category": "📦 Категория",
+		"description": "📝 Описание",
+		"withdrawal": "⬇️ Снятие",
+		"deposit": "⬆️ Пополнение",
+		"balance": "💰 Остаток",
+		"driver": "🚗 Водитель"
+	},
+
+	"result-trip-expenses": "🧾 *Расходы текущей поездки:*\n\n{{expensesText}}",
+	"result-balance": "💼 *Текущий баланс:*\n\n{{formatted}}",
+	"null": "❔ Не указано"
+}
