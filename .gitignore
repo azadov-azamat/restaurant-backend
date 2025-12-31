@@ -3,7 +3,7 @@
 
 # misc
 .DS_STORE
-/.env
+.env
 /.env*
 /coverage/
 /npm-debug.log*
