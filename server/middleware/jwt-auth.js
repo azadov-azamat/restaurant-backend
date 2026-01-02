@@ -17,14 +17,14 @@
 //   await next();
 // });
 
-const { User } = require('../../db/models');
+const { Staff } = require('../../db/models');
 const { verifyToken } = require('../utils/auth');
 
 module.exports = async function (req, res, next) {
   try {
     const tokenPayload = await verifyToken(req);
     if (tokenPayload) {
-      const user = await User.findOne({ where: { telegramId: tokenPayload.userId } });
+      const user = await Staff.findOne({ where: { loginId: tokenPayload.loginId } });
 
       if (!user) {
         return res.sendStatus(401);

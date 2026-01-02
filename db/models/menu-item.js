@@ -74,7 +74,7 @@ module.exports = (sequelize, DataTypes) => {
 
       // Muhim: sizda attribute "categoryId" camelCase.
       // underscored: true qilsak Sequelize ko‘p joyda category_id deb kutishi mumkin.
-      underscored: false,
+      underscored: true,
     }
   );
 

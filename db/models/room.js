@@ -66,7 +66,7 @@ module.exports = (sequelize, DataTypes) => {
       modelName: 'Room',
       tableName: 'rooms',
       timestamps: true,
-      underscored: false,
+      underscored: true,
     }
   );
 

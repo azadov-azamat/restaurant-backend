@@ -69,7 +69,7 @@ module.exports = (sequelize, DataTypes) => {
 
       // Sizning attribute nomlaringiz camelCase (roomId, staffId).
       // Shuning uchun underscored: false qoldirildi.
-      underscored: false,
+      underscored: true,
     }
   );
 

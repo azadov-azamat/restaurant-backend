@@ -70,9 +70,7 @@ module.exports = (sequelize, DataTypes) => {
       modelName: 'Reservation',
       tableName: 'reservations',
       timestamps: true,
-
-      // CamelCase FKlar saqlangan
-      underscored: false,
+      underscored: true,
     }
   );
 

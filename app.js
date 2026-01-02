@@ -13,12 +13,9 @@ morgan.format('custom', ':method :url :status :res[content-length] - :response-t
 const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:3001',
-  'http://localhost:8080',
-  'https://oqim-finance-app.vercel.app',
-  'http://192.168.1.126:8081',
-  'https://oqim-backend.onrender.com',
+  'https://restaurant-room-layout.vercel.app',
+  'https://restaurant-backend-jcak.onrender.com',
 ];
-
 
 const corsOptions = function (req, callback) {
   let options = {
@@ -32,8 +29,8 @@ const corsOptions = function (req, callback) {
       'Accept',
       'Cookie',
       'Authorization',
-      'user-locale',
       'Idempotency-Key',
+      'user-locale',
     ],
   };
 

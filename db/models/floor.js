@@ -3,9 +3,9 @@ const { Model } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
   class Floor extends Model {
-    static associate(models) {
+    static associate({ Room }) {
       // Hozircha bog‘lanish yo‘q (rasmdagi kabi).
-      // Keyin kerak bo‘lsa shu yerga qo‘shasiz.
+      Floor.hasMany(Room, { foreignKey: 'floorId', as: 'rooms' });
     }
   }
 
