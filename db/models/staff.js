@@ -3,10 +3,14 @@ const { Model } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
   class Staff extends Model {
-    static associate({ Order }) {
+    static associate({ Order, Media }) {
       Staff.hasMany(Order, {
         as: 'orders',
         foreignKey: 'staffId',
+      });
+      Staff.belongsTo(Media, {
+        as: 'media',
+        foreignKey: 'mediaId',
       });
     }
   }
@@ -41,11 +45,6 @@ module.exports = (sequelize, DataTypes) => {
         comment: 'Hashed password',
       },
 
-      photo: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
-
       role: {
         type: DataTypes.ENUM('ADMIN', 'MANAGER', 'CHEF', 'WAITER'),
         allowNull: false,
@@ -59,7 +58,25 @@ module.exports = (sequelize, DataTypes) => {
       timestamps: true,
       underscored: true,
     }
-  );
+  )
+    // ✅ Staff yaratilgandan so‘ng Media row yaratib, mediaId set qilish
+    .addHook('afterCreate', async (staff, options) => {
+      const { Media } = sequelize.models;
+
+      // agar allaqachon mediaId berilgan bo‘lsa (masalan import), qaytib ketamiz
+      if (staff.mediaId) return;
+
+      const media = await Media.create(
+        {
+          provider: 'local',
+          ownerType: 'staff',
+          ownerId: staff.id,
+        },
+        { transaction: options.transaction }
+      );
+
+      await staff.update({ mediaId: media.id }, { transaction: options.transaction });
+    });
 
   return Staff;
 };

@@ -7,38 +7,68 @@ const ensureAuth = require('../../middleware/ensure-auth');
 const parseOps = require('../../utils/qps')();
 const pagination = require('../../utils/pagination');
 
-const { Staff } = require('../../../db/models');
+const { Staff, Media, sequelize } = require('../../../db/models');
+const upload = require('../../middleware/upload');
 
 // ------------------------------------------
 // CREATE STAFF
 // ------------------------------------------
 router.post(
   '/',
-  ensureAuth(['ADMIN', 'MANAGER']),
+  ensureAuth(),
   route(async (req, res) => {
-    const { fullName, phone, loginId, password, role, photo } = req.body;
+    const staff = await sequelize.transaction(async t => {
+      const created = await Staff.create(req.body, { transaction: t });
 
-    // MANAGER can only create CHEF and WAITER
-    if (req.user.role === 'MANAGER' && ['ADMIN', 'MANAGER'].includes(role)) {
-      return res.status(403).send({ message: 'Managers cannot create Admin or Manager roles' });
-    }
+      // Agar siz hook ishlatmasangiz, shu yerda yaratib qo‘yasiz:
+      if (!created.mediaId) {
+        const media = await Media.create(
+          { provider: 'local', ownerType: 'staff', ownerId: created.id },
+          { transaction: t }
+        );
+        await created.update({ mediaId: media.id }, { transaction: t });
+      }
 
-    // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const staff = await Staff.create({
-      fullName,
-      phone,
-      loginId,
-      password: hashedPassword,
-      role,
-      photo,
+      return created;
     });
 
-    // Don't return password
-    const { password: _, ...staffData } = staff.toJSON();
+    res.status(201).send({ data: staff });
+  })
+);
 
-    res.status(201).send({ data: staffData });
+// UPLOAD STAFF PHOTO (media row’ni update qiladi)
+router.post(
+  '/:id/photo',
+  ensureAuth(),
+  upload.single('file'),
+  route(async (req, res) => {
+    const staff = await Staff.findByPk(req.params.id);
+    if (!staff) return res.status(404).send({ message: 'Staff not found' });
+
+    // media row bo‘lmasa yaratamiz
+    let mediaId = staff.mediaId;
+    if (!mediaId) {
+      const media = await Media.create({
+        provider: 'local',
+        ownerType: 'staff',
+        ownerId: staff.id,
+      });
+      mediaId = media.id;
+      await staff.update({ mediaId });
+    }
+
+    const media = await Media.findByPk(mediaId);
+
+    await media.update({
+      path: req.file.path,
+      filename: req.file.originalname,
+      mimeType: req.file.mimetype,
+      size: req.file.size,
+      // xohlasangiz url ham set qiling (masalan CDN)
+      // url: `/uploads/${req.file.filename}`,
+    });
+
+    res.send({ data: { staff, media } });
   })
 );
 
@@ -53,6 +83,7 @@ router.get(
 
     query.attributes = { exclude: ['password'] };
     query.order = [['createdAt', 'DESC']];
+    query.include = [{ model: Media, as: 'media' }];
 
     // MANAGER can only see CHEF and WAITER
     if (req.user.role === 'MANAGER') {

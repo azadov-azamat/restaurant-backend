@@ -4,7 +4,7 @@ const router = express.Router();
 const route = require('../../utils/async-handler');
 const ensureAuth = require('../../middleware/ensure-auth');
 
-const { OrderItem, Order, MenuItem } = require('../../../db/models');
+const { OrderItem, Order, MenuItem, Room } = require('../../../db/models');
 
 // ------------------------------------------
 // ADD ITEM TO ORDER
@@ -91,7 +91,7 @@ router.get(
           as: 'order',
           include: [
             {
-              model: require('../models').Room,
+              model: Room,
               as: 'room',
               attributes: ['id', 'name'],
             },

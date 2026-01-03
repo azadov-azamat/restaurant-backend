@@ -53,6 +53,7 @@
     "jsonwebtoken": "^9.0.3",
     "lodash": "^4.17.21",
     "morgan": "1.10.0",
+    "multer": "^2.0.2",
     "node-cron": "^4.2.1",
     "openai": "4.98.0",
     "perf_hooks": "^0.0.1",

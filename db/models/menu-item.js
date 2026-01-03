@@ -3,7 +3,7 @@ const { Model } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
   class MenuItem extends Model {
-    static associate({ Category, OrderItem }) {
+    static associate({ Category, OrderItem, Media }) {
       MenuItem.belongsTo(Category, {
         as: 'category',
         foreignKey: 'categoryId',
@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
         as: 'orderItems',
         foreignKey: 'menuItemId',
       });
+      MenuItem.belongsTo(Media, { as: 'media', foreignKey: 'mediaId' });
     }
   }
 
@@ -76,7 +77,22 @@ module.exports = (sequelize, DataTypes) => {
       // underscored: true qilsak Sequelize ko‘p joyda category_id deb kutishi mumkin.
       underscored: true,
     }
-  );
+  ).addHook('afterCreate', async (menuItem, options) => {
+    const { Media } = sequelize.models;
+
+    if (menuItem.mediaId) return;
+
+    const media = await Media.create(
+      {
+        provider: 'local',
+        ownerType: 'menuItem',
+        ownerId: menuItem.id,
+      },
+      { transaction: options.transaction }
+    );
+
+    await menuItem.update({ mediaId: media.id }, { transaction: options.transaction });
+  });
 
   return MenuItem;
 };

@@ -6,7 +6,8 @@ const ensureAuth = require('../../middleware/ensure-auth');
 const parseOps = require('../../utils/qps')();
 const pagination = require('../../utils/pagination');
 
-const { MenuItem, Category } = require('../../../db/models');
+const { MenuItem, Category, Media } = require('../../../db/models');
+const upload = require('../../middleware/upload');
 
 // ------------------------------------------
 // CREATE MENU ITEM
@@ -37,6 +38,37 @@ router.post(
   })
 );
 
+router.post(
+  '/:id/image',
+  ensureAuth(),
+  upload.single('file'),
+  route(async (req, res) => {
+    const item = await MenuItem.findByPk(req.params.id);
+    if (!item) return res.status(404).send({ message: 'Menu item not found' });
+
+    let mediaId = item.mediaId;
+    if (!mediaId) {
+      const media = await Media.create({
+        provider: 'local',
+        ownerType: 'menuItem',
+        ownerId: item.id,
+      });
+      mediaId = media.id;
+      await item.update({ mediaId });
+    }
+
+    const media = await Media.findByPk(mediaId);
+
+    await media.update({
+      path: req.file.path,
+      filename: req.file.originalname,
+      mimeType: req.file.mimetype,
+      size: req.file.size,
+    });
+
+    res.send({ data: { item, media } });
+  })
+);
 // ------------------------------------------
 // GET ALL MENU ITEMS
 // ------------------------------------------
@@ -51,6 +83,11 @@ router.get(
         model: Category,
         as: 'category',
         attributes: ['id', 'name'],
+      },
+      {
+        model: Media,
+        as: 'media',
+        attributes: ['id', 'path', 'filename', 'mimeType', 'size'],
       },
     ];
     query.order = [['createdAt', 'DESC']];
