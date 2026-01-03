@@ -6,72 +6,130 @@ const route = require('../../utils/async-handler');
 const ensureAuth = require('../../middleware/ensure-auth');
 const parseOps = require('../../utils/qps')();
 const pagination = require('../../utils/pagination');
-
-const { Staff, Media, sequelize } = require('../../../db/models');
-const upload = require('../../middleware/upload');
-
+const { Staff, Media } = require('../../../db/models');
+const { v4: uuidv4 } = require('uuid');
+const { getSignedUploadUrl, deleteObject } = require('../../services/aws');
 // ------------------------------------------
 // CREATE STAFF
 // ------------------------------------------
 router.post(
   '/',
-  ensureAuth(),
+  ensureAuth(['ADMIN', 'MANAGER']),
   route(async (req, res) => {
-    const staff = await sequelize.transaction(async t => {
-      const created = await Staff.create(req.body, { transaction: t });
+    const { fullName, phone, loginId, password, role, photo } = req.body;
 
-      // Agar siz hook ishlatmasangiz, shu yerda yaratib qo‘yasiz:
-      if (!created.mediaId) {
-        const media = await Media.create(
-          { provider: 'local', ownerType: 'staff', ownerId: created.id },
-          { transaction: t }
-        );
-        await created.update({ mediaId: media.id }, { transaction: t });
-      }
-
-      return created;
-    });
-
-    res.status(201).send({ data: staff });
-  })
-);
-
-// UPLOAD STAFF PHOTO (media row’ni update qiladi)
-router.post(
-  '/:id/photo',
-  ensureAuth(),
-  upload.single('file'),
-  route(async (req, res) => {
-    const staff = await Staff.findByPk(req.params.id);
-    if (!staff) return res.status(404).send({ message: 'Staff not found' });
-
-    // media row bo‘lmasa yaratamiz
-    let mediaId = staff.mediaId;
-    if (!mediaId) {
-      const media = await Media.create({
-        provider: 'local',
-        ownerType: 'staff',
-        ownerId: staff.id,
-      });
-      mediaId = media.id;
-      await staff.update({ mediaId });
+    // MANAGER can only create CHEF and WAITER
+    if (req.user.role === 'MANAGER' && ['ADMIN', 'MANAGER'].includes(role)) {
+      return res.status(403).send({ message: 'Managers cannot create Admin or Manager roles' });
     }
 
-    const media = await Media.findByPk(mediaId);
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    await media.update({
-      path: req.file.path,
-      filename: req.file.originalname,
-      mimeType: req.file.mimetype,
-      size: req.file.size,
-      // xohlasangiz url ham set qiling (masalan CDN)
-      // url: `/uploads/${req.file.filename}`,
+    const staff = await Staff.create({
+      fullName,
+      phone,
+      loginId,
+      password: hashedPassword,
+      role,
+      photo,
     });
 
-    res.send({ data: { staff, media } });
+    // Don't return password
+    const { password: _, ...staffData } = staff.toJSON();
+
+    res.status(201).send({ data: staffData });
   })
 );
 
+router.post(
+  '/:id/upload-url',
+  ensureAuth(),
+  route(async (req, res) => {
+    const staff = await Staff.findByPk(req.params.id);
+    if (!staff) {
+      return res.status(404).send({ message: 'Staff not found' });
+    }
+
+    const { filename, mimeType } = req.body;
+
+    if (!filename || !mimeType) {
+      return res.status(400).send({ message: 'filename and mimeType required' });
+    }
+
+    // Faqat rasm formatlarini qabul qilish
+    if (!mimeType.startsWith('image/')) {
+      return res.status(400).send({ message: 'Only image files allowed' });
+    }
+
+    // Unique S3 key yaratish
+    const fileExtension = filename.split('.').pop();
+    const uniqueKey = `staff/${staff.id}/${uuidv4()}.${fileExtension}`;
+
+    // Presigned URL yaratish (sizning function)
+    const uploadUrl = await getSignedUploadUrl(uniqueKey, {
+      ContentType: mimeType,
+    });
+
+    // Public URL
+    const publicUrl = `https://${process.env.S3_BUCKET}.s3.${process.env.S3_REGION}.amazonaws.com/${uniqueKey}`;
+
+    // Eski media ni o'chirish (agar mavjud bo'lsa)
+    if (staff.mediaId) {
+      const oldMedia = await Media.findByPk(staff.mediaId);
+      if (oldMedia?.key) {
+        await deleteObject(oldMedia.key);
+      }
+      // Eski media record ni o'chirish yoki yangilash
+      await Media.destroy({ where: { id: staff.mediaId } });
+    }
+
+    // Yangi Media record yaratish
+    const media = await Media.create({
+      provider: 's3',
+      ownerType: 'staff',
+      ownerId: staff.id,
+      filename,
+      mimeType,
+      url: publicUrl,
+      key: uniqueKey,
+      size: 0, // Frontend dan keladi
+    });
+
+    // Staff ni yangilash
+    await staff.update({ mediaId: media.id });
+
+    res.send({
+      uploadUrl,
+      publicUrl,
+      mediaId: media.id,
+    });
+  })
+);
+
+// PATCH /staff/:id/upload-complete - Upload tugaganini tasdiqlash
+router.patch(
+  '/:id/upload-complete',
+  ensureAuth(),
+  route(async (req, res) => {
+    const staff = await Staff.findByPk(req.params.id);
+    if (!staff || !staff.mediaId) {
+      return res.status(404).send({ message: 'Staff or media not found' });
+    }
+
+    const { size } = req.body;
+
+    // Media ni update qilish
+    await Media.update({ size }, { where: { id: staff.mediaId } });
+
+    const updatedStaff = await Staff.findByPk(staff.id, {
+      include: [{ model: Media, as: 'media' }],
+      attributes: { exclude: ['password'] },
+    });
+
+    res.send({ data: updatedStaff });
+  })
+);
 // ------------------------------------------
 // GET ALL STAFF
 // ------------------------------------------
@@ -84,7 +142,7 @@ router.get(
     query.attributes = { exclude: ['password'] };
     query.order = [['createdAt', 'DESC']];
     query.include = [{ model: Media, as: 'media' }];
-
+    
     // MANAGER can only see CHEF and WAITER
     if (req.user.role === 'MANAGER') {
       query.where = {

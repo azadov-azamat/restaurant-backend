@@ -77,22 +77,6 @@ module.exports = (sequelize, DataTypes) => {
       // underscored: true qilsak Sequelize ko‘p joyda category_id deb kutishi mumkin.
       underscored: true,
     }
-  ).addHook('afterCreate', async (menuItem, options) => {
-    const { Media } = sequelize.models;
-
-    if (menuItem.mediaId) return;
-
-    const media = await Media.create(
-      {
-        provider: 'local',
-        ownerType: 'menuItem',
-        ownerId: menuItem.id,
-      },
-      { transaction: options.transaction }
-    );
-
-    await menuItem.update({ mediaId: media.id }, { transaction: options.transaction });
-  });
-
+  );
   return MenuItem;
 };

@@ -7,7 +7,8 @@ const parseOps = require('../../utils/qps')();
 const pagination = require('../../utils/pagination');
 
 const { MenuItem, Category, Media } = require('../../../db/models');
-const upload = require('../../middleware/upload');
+const { v4: uuidv4 } = require('uuid');
+const { getSignedUploadUrl, deleteObject } = require('../../services/aws');
 
 // ------------------------------------------
 // CREATE MENU ITEM
@@ -38,37 +39,6 @@ router.post(
   })
 );
 
-router.post(
-  '/:id/image',
-  ensureAuth(),
-  upload.single('file'),
-  route(async (req, res) => {
-    const item = await MenuItem.findByPk(req.params.id);
-    if (!item) return res.status(404).send({ message: 'Menu item not found' });
-
-    let mediaId = item.mediaId;
-    if (!mediaId) {
-      const media = await Media.create({
-        provider: 'local',
-        ownerType: 'menuItem',
-        ownerId: item.id,
-      });
-      mediaId = media.id;
-      await item.update({ mediaId });
-    }
-
-    const media = await Media.findByPk(mediaId);
-
-    await media.update({
-      path: req.file.path,
-      filename: req.file.originalname,
-      mimeType: req.file.mimetype,
-      size: req.file.size,
-    });
-
-    res.send({ data: { item, media } });
-  })
-);
 // ------------------------------------------
 // GET ALL MENU ITEMS
 // ------------------------------------------
@@ -84,11 +54,6 @@ router.get(
         as: 'category',
         attributes: ['id', 'name'],
       },
-      {
-        model: Media,
-        as: 'media',
-        attributes: ['id', 'path', 'filename', 'mimeType', 'size'],
-      },
     ];
     query.order = [['createdAt', 'DESC']];
 
@@ -98,6 +63,90 @@ router.get(
       data: menuItems,
       meta: pagination(query.limit, query.offset, count),
     });
+  })
+);
+
+// POST /menu-items/:id/upload-url
+router.post(
+  '/:id/upload-url',
+  ensureAuth(),
+  route(async (req, res) => {
+    const item = await MenuItem.findByPk(req.params.id);
+    if (!item) {
+      return res.status(404).send({ message: 'Menu item not found' });
+    }
+
+    const { filename, mimeType } = req.body;
+
+    if (!filename || !mimeType) {
+      return res.status(400).send({ message: 'filename and mimeType required' });
+    }
+
+    if (!mimeType.startsWith('image/')) {
+      return res.status(400).send({ message: 'Only image files allowed' });
+    }
+
+    const fileExtension = filename.split('.').pop();
+    const uniqueKey = `menu-items/${item.id}/${uuidv4()}.${fileExtension}`;
+
+    const uploadUrl = await getSignedUploadUrl(uniqueKey, {
+      ContentType: mimeType,
+    });
+
+    const publicUrl = `https://${process.env.S3_BUCKET}.s3.${process.env.S3_REGION}.amazonaws.com/${uniqueKey}`;
+
+    // Eski media ni o'chirish
+    if (item.mediaId) {
+      const oldMedia = await Media.findByPk(item.mediaId);
+      if (oldMedia?.key) {
+        await deleteObject(oldMedia.key);
+      }
+      await Media.destroy({ where: { id: item.mediaId } });
+    }
+
+    const media = await Media.create({
+      provider: 's3',
+      ownerType: 'menuItem',
+      ownerId: item.id,
+      filename,
+      mimeType,
+      url: publicUrl,
+      key: uniqueKey,
+      size: 0,
+    });
+
+    await item.update({ mediaId: media.id });
+
+    res.send({
+      uploadUrl,
+      publicUrl,
+      mediaId: media.id,
+    });
+  })
+);
+
+// PATCH /menu-items/:id/upload-complete
+router.patch(
+  '/:id/upload-complete',
+  ensureAuth(),
+  route(async (req, res) => {
+    const item = await MenuItem.findByPk(req.params.id);
+    if (!item || !item.mediaId) {
+      return res.status(404).send({ message: 'Menu item or media not found' });
+    }
+
+    const { size } = req.body;
+
+    await Media.update({ size }, { where: { id: item.mediaId } });
+
+    const updatedItem = await MenuItem.findByPk(item.id, {
+      include: [
+        { model: Media, as: 'media' },
+        { model: Category, as: 'category' },
+      ],
+    });
+
+    res.send({ data: updatedItem });
   })
 );
 

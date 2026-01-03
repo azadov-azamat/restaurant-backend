@@ -65,11 +65,11 @@ app.use(i18n.init);
 
 // Body parsers (no need for body-parser package)
 app.use(express.urlencoded({ extended: false }));
+
 app.use(
   express.json({
     strict: true,
-    limit: '200kb',
-    type: '*/*',
+    limit: '2mb',
   })
 );
 

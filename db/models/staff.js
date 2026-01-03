@@ -58,25 +58,7 @@ module.exports = (sequelize, DataTypes) => {
       timestamps: true,
       underscored: true,
     }
-  )
-    // ✅ Staff yaratilgandan so‘ng Media row yaratib, mediaId set qilish
-    .addHook('afterCreate', async (staff, options) => {
-      const { Media } = sequelize.models;
-
-      // agar allaqachon mediaId berilgan bo‘lsa (masalan import), qaytib ketamiz
-      if (staff.mediaId) return;
-
-      const media = await Media.create(
-        {
-          provider: 'local',
-          ownerType: 'staff',
-          ownerId: staff.id,
-        },
-        { transaction: options.transaction }
-      );
-
-      await staff.update({ mediaId: media.id }, { transaction: options.transaction });
-    });
+  );
 
   return Staff;
 };

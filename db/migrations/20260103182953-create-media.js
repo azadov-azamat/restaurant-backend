@@ -1,5 +1,4 @@
 'use strict';
-
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('media', {
@@ -7,38 +6,66 @@ module.exports = {
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4,
         primaryKey: true,
-        allowNull: false,
       },
-
-      url: { type: Sequelize.STRING, allowNull: true },
-      path: { type: Sequelize.STRING, allowNull: true },
-      filename: { type: Sequelize.STRING, allowNull: true },
-      mime_type: { type: Sequelize.STRING, allowNull: true },
-      size: { type: Sequelize.INTEGER, allowNull: true },
-
-      provider: {
-        type: Sequelize.ENUM('local', 's3'),
-        allowNull: false,
-        defaultValue: 'local',
+      media_type: {
+        type: Sequelize.ENUM('photo', 'video'),
       },
-
-      owner_type: {
-        type: Sequelize.ENUM('staff', 'menuItem'),
+      path: {
+        type: Sequelize.STRING,
+      },
+      preview_path: {
+        type: Sequelize.STRING,
+      },
+      order: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
+      },
+      staff_id: {
+        type: Sequelize.UUID,
+        references: {
+          model: 'staff',
+          key: 'id',
+        },
+      },
+      menu_item_id: {
+        type: Sequelize.UUID,
+        references: {
+          model: 'menu_items',
+          key: 'id',
+        },
+      },
+      temp_session_id: {
+        type: Sequelize.STRING,
         allowNull: true,
       },
-      owner_id: { type: Sequelize.UUID, allowNull: true },
+      content_type: {
+        type: Sequelize.STRING,
+      },
+      created_at: {
+        allowNull: false,
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.literal("(now() at time zone 'utc')"),
+      },
+      updated_at: {
+        allowNull: false,
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.literal("(now() at time zone 'utc')"),
+      },
+    });
 
-      created_at: { type: Sequelize.DATE, allowNull: false },
-      updated_at: { type: Sequelize.DATE, allowNull: false },
+    await queryInterface.addIndex('media', ['temp_session_id'], {
+      name: 'media_temp_session_id_index',
     });
   },
 
-  async down(queryInterface) {
-    await queryInterface.dropTable('media');
-
-    if (queryInterface.sequelize.getDialect() === 'postgres') {
-      await queryInterface.sequelize.query('DROP TYPE IF EXISTS "enum_media_provider";');
-      await queryInterface.sequelize.query('DROP TYPE IF EXISTS "enum_media_ownerType";');
+  async down(queryInterface, Sequelize) {
+    // remove the index explicitly (dropTable would also remove it, but this is safe & clear)
+    try {
+      await queryInterface.removeIndex('media', 'media_temp_session_id_index');
+    } catch (e) {
+      // ignore if it doesn't exist
     }
+    await queryInterface.dropTable('media');
   },
 };
