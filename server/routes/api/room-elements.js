@@ -21,6 +21,7 @@ router.post(
       return res.status(404).send({ message: 'Room not found' });
     }
 
+    delete elementData.id;
     const element = await RoomElement.create({
       roomId,
       type,
