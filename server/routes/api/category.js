@@ -1,5 +1,5 @@
-const express = require("express")
-const router = express.Router()
+const express = require('express');
+const router = express.Router();
 
 const route = require('../../utils/async-handler');
 const ensureAuth = require('../../middleware/ensure-auth');
@@ -12,111 +12,111 @@ const { Category, MenuItem } = require('../../../db/models');
 // CREATE CATEGORY
 // ------------------------------------------
 router.post(
-  "/",
-  ensureAuth(["ADMIN", "MANAGER"]),
+  '/',
+  ensureAuth(['ADMIN', 'MANAGER']),
   route(async (req, res) => {
-    const { name, description } = req.body
+    const { name, description } = req.body;
 
-    const category = await Category.create({ name, description })
+    const category = await Category.create({ name, description });
 
-    res.status(201).send({ data: category })
-  }),
-)
+    res.status(201).send({ data: category });
+  })
+);
 
 // ------------------------------------------
 // GET ALL CATEGORIES
 // ------------------------------------------
 router.get(
-  "/",
+  '/',
   ensureAuth(),
   route(async (req, res) => {
-    const query = parseOps(req.query)
+    const query = parseOps(req.query);
 
     query.include = [
       {
         model: MenuItem,
-        as: "menuItems",
-        attributes: ["id", "name", "price"],
+        as: 'menuItems',
+        attributes: ['id', 'name', 'price'],
       },
-    ]
-    query.order = [["createdAt", "ASC"]]
+    ];
+    query.order = [['createdAt', 'ASC']];
 
-    const { rows: categories, count } = await Category.findAndCountAll(query)
+    const { rows: categories, count } = await Category.findAndCountAll(query);
 
     res.send({
       data: categories,
       meta: pagination(query.limit, query.offset, count),
-    })
-  }),
-)
+    });
+  })
+);
 
 // ------------------------------------------
 // GET ONE CATEGORY BY ID
 // ------------------------------------------
 router.get(
-  "/:id",
+  '/:id',
   ensureAuth(),
   route(async (req, res) => {
     const category = await Category.findByPk(req.params.id, {
       include: [
         {
           model: MenuItem,
-          as: "menuItems",
+          as: 'menuItems',
         },
       ],
-    })
+    });
 
     if (!category) {
-      return res.status(404).send({ message: "Category not found" })
+      return res.status(404).send({ message: 'Category not found' });
     }
 
-    res.send({ data: category })
-  }),
-)
+    res.send({ data: category });
+  })
+);
 
 // ------------------------------------------
 // UPDATE CATEGORY (PATCH)
 // ------------------------------------------
 router.patch(
-  "/:id",
-  ensureAuth(["ADMIN", "MANAGER"]),
+  '/:id',
+  ensureAuth(['ADMIN', 'MANAGER']),
   route(async (req, res) => {
-    const category = await Category.findByPk(req.params.id)
+    const category = await Category.findByPk(req.params.id);
 
     if (!category) {
-      return res.status(404).send({ message: "Category not found" })
+      return res.status(404).send({ message: 'Category not found' });
     }
 
-    await category.update(req.body)
+    await category.update(req.body);
 
-    res.send({ data: category })
-  }),
-)
+    res.send({ data: category });
+  })
+);
 
 // ------------------------------------------
 // DELETE CATEGORY
 // ------------------------------------------
 router.delete(
-  "/:id",
-  ensureAuth(["ADMIN", "MANAGER"]),
+  '/:id',
+  ensureAuth(['ADMIN', 'MANAGER']),
   route(async (req, res) => {
-    const category = await Category.findByPk(req.params.id)
+    const category = await Category.findByPk(req.params.id);
 
     if (!category) {
-      return res.status(404).send({ message: "Category not found" })
+      return res.status(404).send({ message: 'Category not found' });
     }
 
     // Check if category has menu items
-    const itemCount = await MenuItem.count({ where: { categoryId: category.id } })
+    const itemCount = await MenuItem.count({ where: { categoryId: category.id } });
 
     if (itemCount > 0) {
-      return res.status(400).send({ message: "Cannot delete category with existing menu items" })
+      return res.status(400).send({ message: 'Cannot delete category with existing menu items' });
     }
 
-    await category.destroy()
+    await category.destroy();
 
-    res.send({ message: "Category deleted successfully" })
-  }),
-)
+    res.send({ message: 'Category deleted successfully' });
+  })
+);
 
-module.exports = router
+module.exports = router;

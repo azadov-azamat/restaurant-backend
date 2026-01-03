@@ -1,5 +1,5 @@
-const express = require("express")
-const router = express.Router()
+const express = require('express');
+const router = express.Router();
 
 const route = require('../../utils/async-handler');
 const ensureAuth = require('../../middleware/ensure-auth');
@@ -12,15 +12,15 @@ const { MenuItem, Category } = require('../../../db/models');
 // CREATE MENU ITEM
 // ------------------------------------------
 router.post(
-  "/",
-  ensureAuth(["ADMIN", "MANAGER"]),
+  '/',
+  ensureAuth(['ADMIN', 'MANAGER']),
   route(async (req, res) => {
-    const { name, categoryId, price, image, description, type, quantity } = req.body
+    const { name, categoryId, price, image, description, type, quantity } = req.body;
 
-    const category = await Category.findByPk(categoryId)
+    const category = await Category.findByPk(categoryId);
 
     if (!category) {
-      return res.status(404).send({ message: "Category not found" })
+      return res.status(404).send({ message: 'Category not found' });
     }
 
     const menuItem = await MenuItem.create({
@@ -31,115 +31,115 @@ router.post(
       description,
       type,
       quantity,
-    })
+    });
 
-    res.status(201).send({ data: menuItem })
-  }),
-)
+    res.status(201).send({ data: menuItem });
+  })
+);
 
 // ------------------------------------------
 // GET ALL MENU ITEMS
 // ------------------------------------------
 router.get(
-  "/",
+  '/',
   ensureAuth(),
   route(async (req, res) => {
-    const query = parseOps(req.query)
+    const query = parseOps(req.query);
 
     query.include = [
       {
         model: Category,
-        as: "category",
-        attributes: ["id", "name"],
+        as: 'category',
+        attributes: ['id', 'name'],
       },
-    ]
-    query.order = [["createdAt", "DESC"]]
+    ];
+    query.order = [['createdAt', 'DESC']];
 
-    const { rows: menuItems, count } = await MenuItem.findAndCountAll(query)
+    const { rows: menuItems, count } = await MenuItem.findAndCountAll(query);
 
     res.send({
       data: menuItems,
       meta: pagination(query.limit, query.offset, count),
-    })
-  }),
-)
+    });
+  })
+);
 
 // ------------------------------------------
 // GET MENU ITEMS BY CATEGORY
 // ------------------------------------------
 router.get(
-  "/category/:categoryId",
+  '/category/:categoryId',
   ensureAuth(),
   route(async (req, res) => {
     const menuItems = await MenuItem.findAll({
       where: { categoryId: req.params.categoryId },
-      order: [["name", "ASC"]],
-    })
+      order: [['name', 'ASC']],
+    });
 
-    res.send({ data: menuItems })
-  }),
-)
+    res.send({ data: menuItems });
+  })
+);
 
 // ------------------------------------------
 // GET ONE MENU ITEM BY ID
 // ------------------------------------------
 router.get(
-  "/:id",
+  '/:id',
   ensureAuth(),
   route(async (req, res) => {
     const menuItem = await MenuItem.findByPk(req.params.id, {
       include: [
         {
           model: Category,
-          as: "category",
+          as: 'category',
         },
       ],
-    })
+    });
 
     if (!menuItem) {
-      return res.status(404).send({ message: "Menu item not found" })
+      return res.status(404).send({ message: 'Menu item not found' });
     }
 
-    res.send({ data: menuItem })
-  }),
-)
+    res.send({ data: menuItem });
+  })
+);
 
 // ------------------------------------------
 // UPDATE MENU ITEM (PATCH)
 // ------------------------------------------
 router.patch(
-  "/:id",
-  ensureAuth(["ADMIN", "MANAGER"]),
+  '/:id',
+  ensureAuth(['ADMIN', 'MANAGER']),
   route(async (req, res) => {
-    const menuItem = await MenuItem.findByPk(req.params.id)
+    const menuItem = await MenuItem.findByPk(req.params.id);
 
     if (!menuItem) {
-      return res.status(404).send({ message: "Menu item not found" })
+      return res.status(404).send({ message: 'Menu item not found' });
     }
 
-    await menuItem.update(req.body)
+    await menuItem.update(req.body);
 
-    res.send({ data: menuItem })
-  }),
-)
+    res.send({ data: menuItem });
+  })
+);
 
 // ------------------------------------------
 // DELETE MENU ITEM
 // ------------------------------------------
 router.delete(
-  "/:id",
-  ensureAuth(["ADMIN", "MANAGER"]),
+  '/:id',
+  ensureAuth(['ADMIN', 'MANAGER']),
   route(async (req, res) => {
-    const menuItem = await MenuItem.findByPk(req.params.id)
+    const menuItem = await MenuItem.findByPk(req.params.id);
 
     if (!menuItem) {
-      return res.status(404).send({ message: "Menu item not found" })
+      return res.status(404).send({ message: 'Menu item not found' });
     }
 
-    await menuItem.destroy()
+    await menuItem.destroy();
 
-    res.send({ message: "Menu item deleted successfully" })
-  }),
-)
+    res.send({ message: 'Menu item deleted successfully' });
+  })
+);
 
-module.exports = router
+module.exports = router;
