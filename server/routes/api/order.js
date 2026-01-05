@@ -7,6 +7,7 @@ const parseOps = require('../../utils/qps')();
 const pagination = require('../../utils/pagination');
 
 const { Order, OrderItem, MenuItem, Room, Staff } = require('../../../db/models');
+const orderEventEmitter = require('../../utils/emitter');
 
 // ------------------------------------------
 // CREATE ORDER
@@ -48,6 +49,52 @@ router.post(
   })
 );
 
+// SSE endpoint - orders/events
+router.get('/events', ensureAuth(), (req, res) => {
+  console.log('[SSE] Client connected for order events');
+
+  // SSE headers
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection', 'keep-alive');
+  res.setHeader('X-Accel-Buffering', 'no'); // Nginx uchun
+
+  // CORS (agar kerak bo'lsa)
+  res.setHeader('Access-Control-Allow-Origin', '*');
+
+  // Initial connection message
+  res.write('data: {"type":"connected","message":"SSE connection established"}\n\n');
+
+  // Order change event listener
+  const orderChangeListener = data => {
+    console.log('[SSE] Sending order change:', data);
+    res.write(`data: ${JSON.stringify({ type: 'orderChange', ...data })}\n\n`);
+  };
+
+  // Order item change event listener
+  const orderItemChangeListener = data => {
+    console.log('[SSE] Sending order item change:', data);
+    res.write(`data: ${JSON.stringify({ type: 'orderItemChange', ...data })}\n\n`);
+  };
+
+  // Subscribe to events
+  orderEventEmitter.on('orderChange', orderChangeListener);
+  orderEventEmitter.on('orderItemChange', orderItemChangeListener);
+
+  // Heartbeat (har 30 soniyada)
+  const heartbeatInterval = setInterval(() => {
+    res.write('data: {"type":"heartbeat"}\n\n');
+  }, 30000);
+
+  // Client disconnect bo'lganda cleanup
+  req.on('close', () => {
+    console.log('[SSE] Client disconnected');
+    orderEventEmitter.off('orderChange', orderChangeListener);
+    orderEventEmitter.off('orderItemChange', orderItemChangeListener);
+    clearInterval(heartbeatInterval);
+    res.end();
+  });
+});
 // ------------------------------------------
 // GET ALL ORDERS
 // ------------------------------------------
