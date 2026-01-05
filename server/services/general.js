@@ -1,5 +1,5 @@
 async function createStaffWithMedia({ Staff, Media, sequelize }, payload) {
-  return sequelize.transaction(async (t) => {
+  return sequelize.transaction(async t => {
     const staff = await Staff.create(payload, { transaction: t });
 
     const media = await Media.create(
@@ -30,4 +30,3 @@ function computeOrderStatus(items) {
 }
 
 module.exports = { createStaffWithMedia, computeOrderStatus };
-

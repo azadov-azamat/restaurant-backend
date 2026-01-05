@@ -101,27 +101,10 @@ async function saveRawFile(key, buffer, contentType) {
   return `https://${process.env.S3_BUCKET}.s3-${process.env.S3_REGION}.amazonaws.com/${key}`;
 }
 
-// ------------------------------
-// SAVE TRANSCRIPTION (audio + text)
-// ------------------------------
-async function saveTranscription({ audioBytes, transcript, extension }) {
-  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-
-  const ext = extension.startsWith('.') ? extension : `.${extension}`;
-  const audioKey = buildS3Key(`${timestamp}${ext}`);
-  const textKey = buildS3Key(`${timestamp}.txt`);
-
-  await saveRawFile(audioKey, audioBytes, guessMime(ext));
-  await saveRawFile(textKey, Buffer.from(transcript, 'utf8'), 'text/plain');
-
-  return { audioKey, textKey };
-}
-
 module.exports = {
   getSignedUploadUrl,
   deleteObject,
   resizeAndUploadImage,
   upload,
-  saveTranscription,
   saveRawFile,
 };

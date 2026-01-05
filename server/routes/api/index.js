@@ -11,5 +11,6 @@ router.use('/staff', require('./staff'));
 router.use('/orders', require('./order'));
 router.use('/order-items', require('./order-items'));
 router.use('/reservations', require('./reservation'));
+router.use('/media', require('./media'));
 
 module.exports = router;

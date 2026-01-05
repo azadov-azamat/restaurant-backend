@@ -45,6 +45,7 @@
     "events": "^3.3.0",
     "exceljs": "^4.4.0",
     "express": "^5.0.0",
+    "express-validator": "^7.3.1",
     "form-data": "^4.0.1",
     "helmet": "^8.1.0",
     "i18n": "^0.15.1",
