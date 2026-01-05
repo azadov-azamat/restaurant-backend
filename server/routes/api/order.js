@@ -15,7 +15,7 @@ router.post(
   '/',
   ensureAuth(['WAITER']),
   route(async (req, res) => {
-    const { tableId, roomId } = req.body;
+    const { tableId, roomId, items } = req.body;
     const staffId = req.user.id;
 
     const order = await Order.create({
@@ -25,7 +25,26 @@ router.post(
       status: 'OPEN',
     });
 
-    res.status(201).send({ data: order });
+    // Agar items ham kelgan bo‘lsa, ularni create qiling
+    if (Array.isArray(items) && items.length > 0) {
+      await OrderItem.bulkCreate(
+        items.map(i => ({
+          orderId: order.id,
+          menuItemId: i.menuItemId,
+          quantity: i.quantity ?? 1,
+          notes: i.notes ?? null,
+          status: i.status ?? 'PENDING',
+          requiresKitchen: i.requiresKitchen ?? true,
+        }))
+      );
+    }
+
+    // Endi include bilan qayta o‘qib qaytaramiz
+    const orderWithIncludes = await Order.findByPk(order.id, {
+      include: [{ model: OrderItem, as: 'items' }],
+    });
+
+    res.status(201).send({ data: orderWithIncludes });
   })
 );
 

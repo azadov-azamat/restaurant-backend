@@ -15,8 +15,8 @@ const client = new S3Client({
   signatureVersion: 'v4',
   credentials: {
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
-  }
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  },
 });
 
 function getSignedUploadUrl(path, props = {}) {
@@ -105,16 +105,23 @@ async function saveRawFile(key, buffer, contentType) {
 // SAVE TRANSCRIPTION (audio + text)
 // ------------------------------
 async function saveTranscription({ audioBytes, transcript, extension }) {
-  const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
 
-  const ext = extension.startsWith(".") ? extension : `.${extension}`;
+  const ext = extension.startsWith('.') ? extension : `.${extension}`;
   const audioKey = buildS3Key(`${timestamp}${ext}`);
   const textKey = buildS3Key(`${timestamp}.txt`);
 
   await saveRawFile(audioKey, audioBytes, guessMime(ext));
-  await saveRawFile(textKey, Buffer.from(transcript, "utf8"), "text/plain");
+  await saveRawFile(textKey, Buffer.from(transcript, 'utf8'), 'text/plain');
 
   return { audioKey, textKey };
 }
 
-module.exports = { getSignedUploadUrl, deleteObject, resizeAndUploadImage, upload, saveTranscription, saveRawFile };
+module.exports = {
+  getSignedUploadUrl,
+  deleteObject,
+  resizeAndUploadImage,
+  upload,
+  saveTranscription,
+  saveRawFile,
+};

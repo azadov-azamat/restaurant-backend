@@ -51,49 +51,55 @@ router.post(
       return res.status(404).send({ message: 'Staff not found' });
     }
 
-    const { filename, mimeType } = req.body;
+    const { filename, contentType } = req.body;
 
-    if (!filename || !mimeType) {
-      return res.status(400).send({ message: 'filename and mimeType required' });
+    if (!filename || !contentType) {
+      return res.status(400).send({ message: 'filename and contentType required' });
     }
 
     // Faqat rasm formatlarini qabul qilish
-    if (!mimeType.startsWith('image/')) {
+    if (!contentType.startsWith('image/')) {
       return res.status(400).send({ message: 'Only image files allowed' });
     }
 
     // Unique S3 key yaratish
     const fileExtension = filename.split('.').pop();
-    const uniqueKey = `staff/${staff.id}/${uuidv4()}.${fileExtension}`;
+    const s3Key = `staff/${staff.id}/${uuidv4()}.${fileExtension}`;
 
-    // Presigned URL yaratish (sizning function)
-    const uploadUrl = await getSignedUploadUrl(uniqueKey, {
-      ContentType: mimeType,
+    // Presigned URL yaratish
+    const uploadUrl = await getSignedUploadUrl(s3Key, {
+      ContentType: contentType,
     });
 
-    // Public URL
-    const publicUrl = `https://${process.env.S3_BUCKET}.s3.${process.env.S3_REGION}.amazonaws.com/${uniqueKey}`;
+    // Public path (S3 full URL)
+    const publicPath = `https://${process.env.S3_BUCKET}.s3.${process.env.S3_REGION}.amazonaws.com/${s3Key}`;
 
-    // Eski media ni o'chirish (agar mavjud bo'lsa)
+    // Eski media ni o'chirish va yangi yaratish
     if (staff.mediaId) {
       const oldMedia = await Media.findByPk(staff.mediaId);
-      if (oldMedia?.key) {
-        await deleteObject(oldMedia.key);
+      if (oldMedia?.path) {
+        // S3 dan eski rasmni o'chirish
+        const oldKey = oldMedia.path.split('.amazonaws.com/')[1];
+        if (oldKey) {
+          try {
+            await deleteObject(oldKey);
+          } catch (error) {
+            console.error('Failed to delete old S3 object:', error);
+          }
+        }
       }
-      // Eski media record ni o'chirish yoki yangilash
+      // Eski media record ni o'chirish
       await Media.destroy({ where: { id: staff.mediaId } });
     }
 
-    // Yangi Media record yaratish
+    // Yangi Media record yaratish (faqat kerakli fieldlar)
     const media = await Media.create({
-      provider: 's3',
-      ownerType: 'staff',
-      ownerId: staff.id,
-      filename,
-      mimeType,
-      url: publicUrl,
-      key: uniqueKey,
-      size: 0, // Frontend dan keladi
+      mediaType: 'photo',
+      path: publicPath,
+      contentType: contentType,
+      order: null,
+      previewPath: null,
+      tempSessionId: null,
     });
 
     // Staff ni yangilash
@@ -101,35 +107,30 @@ router.post(
 
     res.send({
       uploadUrl,
-      publicUrl,
+      publicPath,
       mediaId: media.id,
     });
   })
 );
 
-// PATCH /staff/:id/upload-complete - Upload tugaganini tasdiqlash
+// PATCH /staff/:id/upload-complete - Upload tugaganini tasdiqlash (optional)
 router.patch(
   '/:id/upload-complete',
   ensureAuth(),
   route(async (req, res) => {
-    const staff = await Staff.findByPk(req.params.id);
-    if (!staff || !staff.mediaId) {
-      return res.status(404).send({ message: 'Staff or media not found' });
-    }
-
-    const { size } = req.body;
-
-    // Media ni update qilish
-    await Media.update({ size }, { where: { id: staff.mediaId } });
-
-    const updatedStaff = await Staff.findByPk(staff.id, {
+    const staff = await Staff.findByPk(req.params.id, {
       include: [{ model: Media, as: 'media' }],
       attributes: { exclude: ['password'] },
     });
 
-    res.send({ data: updatedStaff });
+    if (!staff) {
+      return res.status(404).send({ message: 'Staff not found' });
+    }
+
+    res.send({ data: staff });
   })
 );
+
 // ------------------------------------------
 // GET ALL STAFF
 // ------------------------------------------
@@ -142,7 +143,7 @@ router.get(
     query.attributes = { exclude: ['password'] };
     query.order = [['createdAt', 'DESC']];
     query.include = [{ model: Media, as: 'media' }];
-    
+
     // MANAGER can only see CHEF and WAITER
     if (req.user.role === 'MANAGER') {
       query.where = {
