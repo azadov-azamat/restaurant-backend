@@ -1,7 +1,7 @@
 const express = require('express');
 
 const asyncHandler = require('../../utils/async-handler');
-const { Media, Op, User, VehicleMedia } = require('../../../db/models');
+const { Media, Op, Staff, MenuItem } = require('../../../db/models');
 const { serialize } = require('../../../db/serializers');
 const aws = require('../../services/aws'); // sizdagi upload/deleteObject va h.k.
 const qps = require('../../utils/qps')();
@@ -62,11 +62,14 @@ router.post(
       // public URL ni aniq yig'ib beramiz
       const url = `https://${process.env.S3_BUCKET}.s3-${process.env.S3_REGION}.amazonaws.com/${it.key}`;
 
+      console.log('Media yaratish', it);
+
       const media = await Media.create({
-        url,
-        name: it.name,
-        createdById: req.user?.id || 1,
+        path: url,
+        mediaType: 'photo',
       });
+
+      await MenuItem.update({ mediaId: media.id }, { where: { id: it.menuItemId } });
       results.push(media);
     }
 
@@ -88,7 +91,7 @@ router.get(
       ];
     }
 
-    query.include = [{ model: User, as: 'user' }];
+    query.include = [{ model: Staff, as: 'staff' }];
 
     delete query.where.search;
     const { rows, count } = await Media.findAndCountAll(query);
@@ -186,10 +189,10 @@ router.post(
       }
     }
 
-    // 5️⃣ Pivot (VehicleMedia) dan bog‘lanmalarni tozalash
-    await VehicleMedia.destroy({
-      where: { media_id: ids },
-    });
+    // // 5️⃣ Pivot (VehicleMedia) dan bog‘lanmalarni tozalash
+    // await VehicleMedia.destroy({
+    //   where: { media_id: ids },
+    // });
 
     // 6️⃣ Media jadvalidan yozuvlarni o‘chirish
     await Media.destroy({

@@ -9,6 +9,7 @@ const {
 } = require('@aws-sdk/client-s3');
 const { PassThrough } = require('stream');
 const { pipeline } = require('stream/promises');
+const { HeadObjectCommand } = require('@aws-sdk/client-s3'); 
 
 const client = new S3Client({
   region: process.env.S3_REGION,
@@ -101,10 +102,21 @@ async function saveRawFile(key, buffer, contentType) {
   return `https://${process.env.S3_BUCKET}.s3-${process.env.S3_REGION}.amazonaws.com/${key}`;
 }
 
+async function headObjectExists(path) {
+  try {
+    const cmd = new HeadObjectCommand({ Bucket: process.env.S3_BUCKET, Key: path });
+    await client.send(cmd);
+    return true;
+  } catch (e) {
+    return false; // 404 yoki ruxsat yo'q bo'lsa false
+  }
+}
+
 module.exports = {
   getSignedUploadUrl,
   deleteObject,
   resizeAndUploadImage,
   upload,
   saveRawFile,
+  headObjectExists,
 };

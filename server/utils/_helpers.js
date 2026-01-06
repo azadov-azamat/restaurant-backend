@@ -75,7 +75,7 @@ function buildS3Key(originalName) {
     .slice(0, 60);
   const ext = path.extname(originalName) || '.jpg';
   const ts = Date.now();
-  return `media/jdm/${ts}-${base}${ext}`;
+  return `menu-items/${ts}-${base}${ext}`;
 }
 
 function keyFromUrl(url) {

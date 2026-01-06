@@ -54,6 +54,11 @@ router.get(
         as: 'category',
         attributes: ['id', 'name'],
       },
+      {
+        model: Media,
+        as: 'media',
+        attributes: ['id', 'path', 'mediaType'],
+      },
     ];
     query.order = [['createdAt', 'DESC']];
 
@@ -202,6 +207,11 @@ router.get(
         {
           model: Category,
           as: 'category',
+        },
+        {
+          model: Media,
+          as: 'media',
+          attributes: ['id', 'path', 'mediaType'],
         },
       ],
     });
